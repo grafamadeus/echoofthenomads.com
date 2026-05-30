@@ -27,6 +27,7 @@ const PARTICIPANTS = [
   { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.png" },
   { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.png" },
   { name: "Черикова Нуркамила",     photo: "./assets/media/envato-labs-image-edit.png" },
+  { name: "Хантеңир Омкеев",     photo: "./assets/media/envato-labs-image-edit.png" },
 ];
 
 const firebaseConfig = {
