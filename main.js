@@ -49,8 +49,8 @@ const i18n = {
 const contests = [
     {
     ky: "КӨЧМӨНДӨР ЖАҢЫРЫГЫ",
-    ru: "Эхо Кочевников",
-    en: "Echo of Nomads",
+    ru: "ЭХО КОЧЕВНИКОВ",
+    en: "ECHO OF NOMADS",
     url: "/echo-nomad/index.html",
     emoji: "1<br>июнь"
     },
