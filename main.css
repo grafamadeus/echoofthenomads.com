@@ -67,7 +67,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: url('./echo-nomad/assets/media/background-01-01 (1).png') no-repeat center/cover;
+    background: url('/echo-nomad/assets/media/background-01-01 (1).png') no-repeat center/cover;
     padding: 80px 24px 160px;
 }
 .hero::before {

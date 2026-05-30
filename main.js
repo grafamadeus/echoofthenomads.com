@@ -23,7 +23,7 @@ const i18n = {
     date_label:     "Дата",
     date_text:       "1-июнь",
     place_label:    "Место:",
-    place_text:      "УТРК",
+    place_text:      "НТРК",
     contests_label: "Конкурсы",
     contests_title: "Выберите конкурс",
     national_sub:   "Национальный отбор",
@@ -51,7 +51,7 @@ const contests = [
     ky: "КӨЧМӨНДӨР ЖАҢЫРЫГЫ",
     ru: "Эхо Кочевников",
     en: "Echo of Nomads",
-    url: "./echo-nomad/index.html",
+    url: "/echo-nomad/index.html",
     emoji: "1<br>июнь"
     },
     {
