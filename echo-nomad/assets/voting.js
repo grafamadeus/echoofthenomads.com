@@ -13,21 +13,20 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
 // ════════════════════════════════════
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-05-30T20:00:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-01T20:00:00+06:00");
 const VOTE_CLOSE = new Date("2026-06-01T21:50:00+06:00");
 
 const PARTICIPANTS = [
-  { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.png" },
-  { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.png" },
-  { name: "Байаман Сонунбеков",     photo: "./assets/media/members/Байаман Сонунбеков.png" },
-  { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.png" },
-  { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.png" },
-  { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.png" },
-  { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.png" },
-  { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.png" },
-  { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.png" },
-  { name: "Черикова Нуркамила",     photo: "./assets/media/envato-labs-image-edit.png" },
-  { name: "Хантеңир Омкеев",     photo: "./assets/media/envato-labs-image-edit.png" },
+  { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
+  { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
+  { name: "Байаман Сонунбеков",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
+  { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
+  { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
+  { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
+  { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
+  { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
+  { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
+  { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
 ];
 
 const firebaseConfig = {
@@ -78,7 +77,6 @@ const i18n = {
     modal_for:       "Голосуете за:",
     modal_hint:      "Войдите чтобы отдать голос.<br>Один аккаунт = один голос.",
     google_btn:      "Войти через Google",
-    apple_btn:       "Войти через Apple",
     success_title:   "Голос принят!",
     success_for:     "Вы проголосовали за:",
     success_note:    "Результаты обновляются в реальном времени",
@@ -126,7 +124,6 @@ const i18n = {
     modal_for:       "Добушум:",
     modal_hint:      "Добуш берүү үчүн кириңиз.<br>Бир эсеп = бир добуш.",
     google_btn:      "Google менен кириңиз",
-    apple_btn:       "Apple менен кириңиз",
     success_title:   "Добуш кабыл алынды!",
     success_for:     "Сиз добуш бердиниз:",
     success_note:    "Жыйынтыктар реалдуу убакытта жаңыртылат",
@@ -174,7 +171,6 @@ const i18n = {
     modal_for:       "Voting for:",
     modal_hint:      "Sign in to cast your vote.<br>One account = one vote.",
     google_btn:      "Sign in with Google",
-    apple_btn:       "Sign in with Apple",
     success_title:   "Vote accepted!",
     success_for:     "You voted for:",
     success_note:    "Results update in real time",
@@ -338,25 +334,6 @@ window.signInWithGoogle = async () => {
   } catch (e) {
     if (e.code !== 'auth/popup-closed-by-user')
       document.getElementById('loginError').textContent = t.error_auth;
-  }
-  btn.disabled = false;
-};
-
-// ── Apple ──
-window.signInWithApple = async () => {
-  const btn = document.getElementById('appleBtn');
-  const t = i18n[currentLang];
-  btn.disabled = true;
-  document.getElementById('loginError').textContent = '';
-  try {
-    const provider = new OAuthProvider('apple.com');
-    provider.addScope('email');
-    provider.addScope('name');
-    const result = await signInWithPopup(auth, provider);
-    await handleAuth(result.user);
-  } catch (e) {
-    if (e.code !== 'auth/popup-closed-by-user')
-      document.getElementById('loginError').textContent = t.error_apple;
   }
   btn.disabled = false;
 };

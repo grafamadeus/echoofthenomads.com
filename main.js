@@ -51,51 +51,52 @@ const contests = [
     ky: "КӨЧМӨНДӨР ЖАҢЫРЫГЫ",
     ru: "ЭХО КОЧЕВНИКОВ",
     en: "ECHO OF NOMADS",
-    url: "/echo-nomad/index.html",
+    url: "./echo-nomad/index.html",
     emoji: "1<br>июнь"
     },
     {
-    ky: "Nomad Stars",
-    ru: "Nomad Stars",
-    en: "Nomad Stars",
+    ky: "АВАЗДЫК-АСПАПЧЫЛЫК БАГЫТЫ",
+    ru: "ВОКАЛЬНО-ИНСТРУМЕНТАЛЬНОЕ ИСКУССТВО",
+    en: "VOCAL-INSTRUMENTAL PERFORMANCE",
     url: "#",
     emoji: "2<br>июнь"
     },
     {
-    ky: "Вокалдык-аспаптык",
-    ru: "Вокально-инструментальное",
-    en: "Vocal-Instrumental",
+    ky: "АСПАПЧЫЛЫК БАГЫТЫ",
+    ru: "ИНСТРУМЕНТАЛЬНОЕ ИСКУССТВО",
+    en: "INSTRUMENTAL PERFORMANCE",
     url: "#",
     emoji: "3<br>июнь"
     },
     {
-    ky: "Аспаптык",
-    ru: "Инструментальное",
-    en: "Instrumental",
+    ky: "АЙТУУЧУЛУК БАГЫТЫ",
+    ru: "СКАЗИТЕЛЬСКОЕ ИСКУССТВО",
+    en: "EPIC STORYTELLING",
     url: "#",
     emoji: "4<br>июнь"
     },
     {
-    ky: "Жомокчулук",
-    ru: "Сказительское",
-    en: "Epic Storytelling",
+    ky: "УРБАН НОМАД",
+    ru: "УРБАН НОМАД",
+    en: "URBAN NOMAD",
     url: "#",
     emoji: "5<br>июнь"
     },
     {
-    ky: "Этно-бий",
-    ru: "Этно-танец",
-    en: "Ethno Dance",
+    ky: "КӨЧМӨН ЖЫЛДЫЗДАРЫ",
+    ru: "НОМАД СТАРС",
+    en: "NOMAD STARS",
     url: "#",
     emoji: "6<br>июнь"
     },
     {
-    ky: "Этно-мода",
-    ru: "Этно-мода",
-    en: "Ethno Fashion",
+    ky: "ЭТНО-БИЙ",
+    ru: "ЭТНО-ТАНЕЦ",
+    en: "ETHNIC DANCE",
     url: "#",
     emoji: "7<br>июнь"
     },
+    
 ];
 
 let currentLang = 'ky';

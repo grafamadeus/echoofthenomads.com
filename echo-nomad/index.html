@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ky">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="Эхо Кочевников — Улуттук тандоо 2026">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="./assets/styles/index.css">
   <script src="./assets/script.js" defer></script>
-  <script type="module" src="./assets/voting.js"></script>
+  <script type="module" src="./assets/voting.js" defer></script>
 </head>
 <body>
 
@@ -26,32 +27,36 @@
 
   <!-- HERO -->
   <section class="hero">
-    <div class="container hero__container">
+    <div class="hero__container">
       <div class="bg__animation">
         <div id="stars"></div><div id="stars2"></div><div id="stars3"></div><div id="stars4"></div>
       </div>
-      <img class="hero__logo" id="heroLogo" src="./assets/media/echo-nomad-ru.svg" alt="logo">
-      <div class="hero__subtitle" data-i18n="subtitle"></div>
-      <div class="divider"></div>
-      <div class="hero__info-row">
-        <div class="hero__info-item">
-          <div class="label" data-i18n="date_label"></div>
-          <div class="value" data-i18n="date_text"></div>
+      
+      <div class="container">
+        <img class="hero__logo" id="heroLogo" src="./assets/media/echo-nomad-ru.svg" alt="logo">
+        <div class="hero__subtitle center" data-i18n="subtitle"></div>
+        <div class="divider"></div>
+        <div class="hero__info-row">
+          <div class="hero__info-item">
+            <div class="label" data-i18n="date_label"></div>
+            <div class="value" data-i18n="date_text"></div>
+          </div>
+          <div class="hero__info-item info-item--right">
+            <div class="label" data-i18n="place_label"></div>
+            <div class="value" data-i18n="place_text"></div>
+          </div>
         </div>
-        <div class="hero__info-item info-item--right">
-          <div class="label" data-i18n="place_label"></div>
-          <div class="value" data-i18n="place_text"></div>
+        <div class="hero__cta-wrap">
+          <a href="#members" class="hero__cta-btn" data-i18n="cta_btn"></a>
+        </div>
+        <div class="hero__countdown">
+          <div class="hero__cd-cell"><div class="num" id="cd-days">00</div><div class="unit" data-i18n="cd_day"></div></div>
+          <div class="hero__cd-cell"><div class="num" id="cd-hours">00</div><div class="unit" data-i18n="cd_hour"></div></div>
+          <div class="hero__cd-cell"><div class="num" id="cd-mins">00</div><div class="unit" data-i18n="cd_min"></div></div>
+          <div class="hero__cd-cell"><div class="num" id="cd-secs">00</div><div class="unit" data-i18n="cd_sec"></div></div>
         </div>
       </div>
-      <div class="hero__cta-wrap">
-        <a href="#members" class="hero__cta-btn" data-i18n="cta_btn"></a>
-      </div>
-      <div class="hero__countdown">
-        <div class="hero__cd-cell"><div class="num" id="cd-days">00</div><div class="unit" data-i18n="cd_day"></div></div>
-        <div class="hero__cd-cell"><div class="num" id="cd-hours">00</div><div class="unit" data-i18n="cd_hour"></div></div>
-        <div class="hero__cd-cell"><div class="num" id="cd-mins">00</div><div class="unit" data-i18n="cd_min"></div></div>
-        <div class="hero__cd-cell"><div class="num" id="cd-secs">00</div><div class="unit" data-i18n="cd_sec"></div></div>
-      </div>
+
       <div class='air air1'></div><div class='air air2'></div><div class='air air3'></div><div class='air air4'></div>
     </div>
   </section>
@@ -122,12 +127,6 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
           <span data-i18n="google_btn"></span>
-        </button>
-        <button class="modal-btn modal-btn--apple" id="appleBtn" onclick="signInWithApple()">
-          <svg width="20" height="20" viewBox="0 0 814 1000" style="margin-right:10px;flex-shrink:0;fill:white;">
-            <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.5 135.4-317.3 269-317.3 70.1 0 128.4 46.4 172.5 46.4 42.8 0 109.6-49 192.5-49 30.8 0 108.2 2.6 168.9 80.8zm-198.5-175.4c31.5-37.9 54.3-90.8 54.3-143.7 0-7.1-.6-14.3-1.9-20.1-51.6 2-112.3 34.4-149.2 75.3-28.5 32.4-55.1 85.3-55.1 139.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 46.5 0 102.5-30.9 136.4-70.4z"/>
-          </svg>
-          <span data-i18n="apple_btn"></span>
         </button>
         <div class="modal-error" id="loginError"></div>
       </div>
