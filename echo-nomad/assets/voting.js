@@ -89,6 +89,8 @@ const i18n = {
     error_auth:      "Ошибка входа. Попробуйте снова.",
     error_apple:     "Ошибка входа через Apple. Попробуйте через Google.",
     error_general:   "Ошибка. Попробуйте снова.",
+    jury_title:      "Баллы жюри",
+    
   },
   ky: {
     logo:            "./assets/media/echo-nomad-kg.webp",
@@ -136,6 +138,7 @@ const i18n = {
     error_auth:      "Ката. Кайра аракет кылыңыз.",
     error_apple:     "Apple аркылуу кирүүдө ката. Google аркылуу аракет кылыңыз.",
     error_general:   "Ката. Кайра аракет кылыңыз.",
+    jury_title:      "Калыстар тобунун добуштары",
   },
   en: {
     logo:            "./assets/media/echo-nomad-en.webp",
@@ -183,6 +186,8 @@ const i18n = {
     error_auth:      "Sign-in error. Please try again.",
     error_apple:     "Apple sign-in error. Try Google instead.",
     error_general:   "Error. Please try again.",
+    jury_title:      "Jury Scores",
+
   }
 };
 // ════════════════════════════════════
@@ -262,6 +267,35 @@ function renderMembers() {
         <div class="member-votes">${t.votes_label} <span>${votes}</span></div>
       </div>
       <button class="member-vote-btn" onclick="openVoteModal('${p.name}')">${t.vote_btn}</button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+// ── Жюри баллары ──
+onSnapshot(collection(db, 'jury_votes'), (snapshot) => {
+  const juryTotals = {};
+  PARTICIPANTS.forEach(p => { juryTotals[p.name] = 0; });
+  snapshot.forEach(d => {
+    const scores = d.data().scores || {};
+    Object.entries(scores).forEach(([name, score]) => {
+      if (juryTotals[name] !== undefined) juryTotals[name] += score;
+    });
+  });
+  renderJuryScores(juryTotals);
+});
+
+function renderJuryScores(juryTotals) {
+  const list = document.getElementById('juryScoresList');
+  if (!list) return;
+  list.innerHTML = '';
+  PARTICIPANTS.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'jury-score-row';
+    row.innerHTML = `
+      <img class="member-photo" src="${p.photo}" alt="${p.name}">
+      <div class="member-name">${p.name}</div>
+      <div class="jury-score-val">${juryTotals[p.name] || 0}</div>
     `;
     list.appendChild(row);
   });
