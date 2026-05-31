@@ -5,7 +5,7 @@ html, body {
   color: var(--white);
   -webkit-font-smoothing: antialiased;
   font-family: var(--main-font);
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 .container {
   max-width: 680px;
