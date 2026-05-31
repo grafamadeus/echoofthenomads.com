@@ -5,9 +5,11 @@ html, body {
   color: var(--white);
   -webkit-font-smoothing: antialiased;
   font-family: var(--main-font);
+  overflow-x: hidden;
 }
 .container {
   max-width: 680px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -65,7 +67,6 @@ html, body {
    ═══════════════════════════════════════ */
 .hero__container {
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -202,8 +203,8 @@ html, body {
 
 
 .hero__logo {
-  width: 460px;
-  height: 380px;
+  width: 100%;
+  height: auto;
   object-fit: cover;
 }
 .hero__subtitle {
@@ -288,7 +289,7 @@ html, body {
   background: linear-gradient(160deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
   border: 1px solid rgba(245,196,0,0.18);
   border-radius: 10px;
-  padding: 14px 8px 10px;
+  padding: 7px 4px 5px;
   text-align: center;
   backdrop-filter: blur(4px);
 }
@@ -443,7 +444,7 @@ section .air.air4 { animation: wave2 5s linear infinite; z-index:997; opacity:0.
 .member-votes { font-size: 0.75rem; color: #aaa; }
 .member-votes span { color: #f0c040; font-weight: 700; }
 .member-vote-btn {
-  flex-shrink: 0;
+  flex-shrink: 1;
   padding: 8px 14px;
   background: linear-gradient(135deg, #e8c547, #f0c040, #c9a227);
   color: #000;
@@ -453,7 +454,7 @@ section .air.air4 { animation: wave2 5s linear infinite; z-index:997; opacity:0.
   border-radius: 8px;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.1s;
-  white-space: nowrap;
+  /* white-space: nowrap; */
 }
 .member-vote-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 .members__cards { display: none; }

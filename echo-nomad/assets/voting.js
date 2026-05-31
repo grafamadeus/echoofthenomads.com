@@ -44,7 +44,7 @@ const firebaseConfig = {
 // ════════════════════════════════════
 const i18n = {
   ru: {
-    logo:            "./assets/media/echo-nomad-ru.svg",
+    logo:            "./assets/media/echo-nomad-ru.webp",
     subtitle:        "Национальный отбор",
     date_label:      "Дата:",
     date_text:       "1-июнь",
@@ -91,7 +91,7 @@ const i18n = {
     error_general:   "Ошибка. Попробуйте снова.",
   },
   ky: {
-    logo:            "./assets/media/echo-nomad-kg.svg",
+    logo:            "./assets/media/echo-nomad-kg.webp",
     subtitle:        "Улуттук тандоо",
     date_label:      "Дата:",
     date_text:       "1-июнь",
@@ -138,7 +138,7 @@ const i18n = {
     error_general:   "Ката. Кайра аракет кылыңыз.",
   },
   en: {
-    logo:            "./assets/media/echo-nomad-en.svg",
+    logo:            "./assets/media/echo-nomad-en.webp",
     subtitle:        "National Selection",
     date_label:      "Date:",
     date_text:       "June 1",
