@@ -19,7 +19,7 @@ const VOTE_CLOSE = new Date("2026-06-01T21:50:00+06:00");
 const PARTICIPANTS = [
   { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
   { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-  { name: "Байаман Сонунбеков",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
+  { name: "Сонунбеков Байаман",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
   { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
   { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
   { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
