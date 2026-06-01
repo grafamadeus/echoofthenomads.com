@@ -74,18 +74,7 @@ html, body {
   align-items: center;
   background: url(../media/background-01-01\ \(1\).webp) no-repeat center/cover;
 }
-.hero__container::before {
-  content: '';
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(245,196,0,0.06) 0%, transparent 65%);
-  pointer-events: none;
-  z-index: 0;
-}
+
 .bg__animation {
   position: absolute;
   top: 0; left: 0;
