@@ -13,8 +13,8 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
 // ════════════════════════════════════
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-06-01T23:59:59+06:00");
-const VOTE_CLOSE = new Date("2026-06-01T21:50:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-01T00:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-01T23:50:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
@@ -55,7 +55,7 @@ const i18n = {
     cd_hour:         "час",
     cd_min:          "мин",
     cd_sec:          "сек",
-    vote_time:       "Голосование доступно с 20:00 до 21:50",
+    vote_time:       "Голосование доступно с 20:00 до конца мероприятия",
     about_title:     "О ФЕСТИВАЛЕ",
     about_text:      `Конкурс проводится в два этапа и в сроки, установленные Организатором:<br><br>
                      <span class="bold">I этап</span> – отборочный (национальный уровень):<br>
