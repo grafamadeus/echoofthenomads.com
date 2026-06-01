@@ -104,7 +104,7 @@ const i18n = {
     cd_hour:         "саат",
     cd_min:          "мүн",
     cd_sec:          "сек",
-    vote_time:       "Добуш берүү 20:00дөн 21:50гө чейин жеткиликтүү",
+    vote_time:       "Добуш берүү 20:00дөн сынактын аягына чейин жүрөт",
     about_title:     "ФЕСТИВАЛЬ ЖӨНҮНДӨ",
     about_text:      `Конкурс эки этапта, уюштуруучу тарабынан белгиленген мөөнөттө өткөрүлөт:<br><br>
                      <span class="bold">I этап</span> – Квалификациялык раунд (Улуттук деңгээл):<br>
@@ -152,7 +152,7 @@ const i18n = {
     cd_hour:         "hour",
     cd_min:          "min",
     cd_sec:          "sec",
-    vote_time:       "Voting is available from 20:00 to 21:50",
+    vote_time:       "Voting is available from 20:00 till the end",
     about_title:     "ABOUT THE FESTIVAL",
     about_text:      `The competition is held in two stages within the deadlines set by the Organizer:<br><br>
                      <span class="bold">Stage I</span> – Qualifying Round (National Level):<br>
