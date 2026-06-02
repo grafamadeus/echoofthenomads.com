@@ -11,23 +11,23 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
 // ════════════════════════════════════
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-06-02T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-01T22:00:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-02T10:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-02T23:00:00+06:00");
 
 const PARTICIPANTS = [
-  { name: "Абылабек уулу Данияр",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
-  { name: "Алыбеков Жакшылык",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-  { name: "Алымкул уулу Кубатбек",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
-  { name: "Асанакунова Лира",   photo: "./assets/media/members/ДОКУ.webp" },
-  { name: "Бермет Жакутбекова",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
-  { name: "Вокалдык ансамбль",      photo: "./assets/media/members/ЭРЖАН.webp" },
-  { name: "Исмаилов Улан",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
-  { name: "Калилова Айымкан", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
-  { name: "Касаболотова Айгерим",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
-  { name: "Маматова Асел",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
-  { name: "Саматова Мончок",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
-  { name: "Тажибаева Айдай",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
-  { name: "Токтосунов Абдиназар",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
+  { name: "Абылабек уулу Данияр",        photo: "./assets/media/members/1 Абылабек уулу Данияр.webp" },
+  { name: "Алыбеков Жакшылык",         photo: "./assets/media/members/2 Алыбеков Жакшылык.webp" },
+  { name: "Алымкул уулу Кубатбек",     photo: "./assets/media/members/3 Алымкул уулу Кубатбек.webp" },
+  { name: "Асанакунова Лира",   photo: "./assets/media/members/4 Асанакунова Лира.webp" },
+  { name: "Бермет Жакутбекова",             photo: "./assets/media/members/5 Бермет Жакутбекова.webp" },
+  { name: "Вокалдык ансамбль",      photo: "./assets/media/members/6 АНСАМБЛЬ КУРЕНКЕЕВ.webp" },
+  { name: "Исмаилов Улан",      photo: "./assets/media/members/7 Исмаилов Улан.webp" },
+  { name: "Калилова Айымкан", photo: "./assets/media/members/8 АЙЫМКАН.webp" },
+  { name: "Касаболотова Айгерим",     photo: "./assets/media/members/9 Касаболотова Айгерим.webp" },
+  { name: "Маматова Асел",     photo: "./assets/media/members/10 МАМАТОВА АСЕЛ.webp" },
+  { name: "Саматова Мончок",     photo: "./assets/media/members/11 Саматова Мончок.webp" },
+  { name: "Тажибаева Айдай",     photo: "./assets/media/members/12 Тажибаева Айдай.webp" },
+  { name: "Токтосунов Абдиназар",     photo: "./assets/media/members/13 Токтосунов Абдиназар.webp" },
 ];
 
 const firebaseConfig = {
@@ -133,7 +133,7 @@ const i18n = {
     already_for:     "Сиздин добушуңуз эске алынды:",
     already_note:    "Кайра добуш берүү мүмкүн эмес",
     close_btn:       "Жабуу",
-    alert_not_yet:   "Добуш берүү азырынча башталган жок. 2026-жылдын 2-июнунда саат 20:00дө башталат.",
+    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 2-июнунда саат 20:00дө башталат.",
     alert_closed:    "Добуш берүү аяктады. Катышканыңыз үчүн рахмат!",
     error_auth:      "Ката. Кайра аракет кылыңыз.",
     error_general:   "Ката. Кайра аракет кылыңыз.",

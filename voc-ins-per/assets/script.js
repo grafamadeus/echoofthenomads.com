@@ -1,4 +1,4 @@
-const target = new Date('2026-06-02T22:00:00');
+const target = new Date('2026-06-02T20:00:00');
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
