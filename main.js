@@ -58,7 +58,7 @@ const contests = [
     ky: "АВАЗДЫК-АСПАПЧЫЛЫК БАГЫТЫ",
     ru: "ВОКАЛЬНО-ИНСТРУМЕНТАЛЬНОЕ ИСКУССТВО",
     en: "VOCAL-INSTRUMENTAL PERFORMANCE",
-    url: "#",
+    url: "./voc-ins-per/index.html",
     emoji: "2<br>июнь"
     },
     {
