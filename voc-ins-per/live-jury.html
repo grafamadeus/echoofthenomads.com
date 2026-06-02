@@ -208,6 +208,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding-bottom: 24px;
       box-shadow: 0 0 40px rgba(240,192,64,0.15);
       animation: fadeIn 0.5s ease;
@@ -222,7 +223,7 @@
       flex: 1;
       object-fit: contain;
       object-position: top;
-      max-height: 300px;
+      max-height: fit-content;
     }
     .live-featured__name {
       font-size: clamp(16px, 2.5vw, 22px);
@@ -264,7 +265,7 @@
     /* ── RIGHT — список ── */
     .live-list {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(5, 1fr); 
       gap: 14px;
       height: 100%;
@@ -305,13 +306,13 @@
       font-size: clamp(16px, 1.5vw, 25px);
       font-weight: 600;
       color: #ccc;
-      white-space: nowrap;
+      white-space: wrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     .live-item.active .live-item__name { color: var(--white); }
     .live-item__score {
-      font-size: clamp(16px, 2vw, 20px);
+      font-size: clamp(16px, 2vw, 40px);
       font-weight: 900;
       color: rgba(240,192,64,0.4);
       flex-shrink: 0;
@@ -391,16 +392,19 @@
     };
 
     const PARTICIPANTS = [
-      { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
-      { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-      { name: "Сонунбеков Байаман",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
-      { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
-      { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
-      { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
-      { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
-      { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
-      { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
-      { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
+      { name: "Абылабек уулу Данияр",        photo: "./assets/media/members/1 Абылабек уулу Данияр.webp" },
+      { name: "Алыбеков Жакшылык",         photo: "./assets/media/members/2 Алыбеков Жакшылык.webp" },
+      { name: "Алымкул уулу Кубатбек",     photo: "./assets/media/members/3 Алымкул уулу Кубатбек.webp" },
+      { name: "Асанакунова Лира",   photo: "./assets/media/members/4 Асанакунова Лира.webp" },
+      { name: "Бермет Жакутбекова",             photo: "./assets/media/members/5 Бермет Жакутбекова.webp" },
+      { name: "Вокалдык ансамбль",      photo: "./assets/media/members/6 АНСАМБЛЬ КУРЕНКЕЕВ.webp" },
+      { name: "Исмаилов Улан",      photo: "./assets/media/members/7 Исмаилов Улан.webp" },
+      { name: "Калилова Айымкан", photo: "./assets/media/members/8 АЙЫМКАН.webp" },
+      { name: "Касаболотова Айгерим",     photo: "./assets/media/members/9 Касаболотова Айгерим.webp" },
+      { name: "Маматова Асел",     photo: "./assets/media/members/10 МАМАТОВА АСЕЛ.webp" },
+      { name: "Саматова Мончок",     photo: "./assets/media/members/11 Саматова Мончок.webp" },
+      { name: "Тажибаева Айдай",     photo: "./assets/media/members/12 Тажибаева Айдай.webp" },
+      { name: "Токтосунов Абдиназар",     photo: "./assets/media/members/13 Токтосунов Абдиназар.webp" },
     ];
 
     const app = initializeApp(firebaseConfig);
@@ -409,7 +413,7 @@
     let lastUpdatedName = null;
     let totalScores = {};
 
-    onSnapshot(collection(db, 'jury_votes'), (snapshot) => {
+    onSnapshot(collection(db, 'jury_votes_voc_ins_per'), (snapshot) => {
     const newTotals = {};
     PARTICIPANTS.forEach(p => { newTotals[p.name] = 0; });
 

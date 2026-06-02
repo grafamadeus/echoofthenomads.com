@@ -425,16 +425,19 @@
     ];
 
     const PARTICIPANTS = [
-      { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
-      { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-      { name: "Сонунбеков Байаман",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
-      { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
-      { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
-      { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
-      { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
-      { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
-      { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
-      { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
+      { name: "Абылабек уулу Данияр",        photo: "./assets/media/members/1 Абылабек уулу Данияр.webp" },
+      { name: "Алыбеков Жакшылык",         photo: "./assets/media/members/2 Алыбеков Жакшылык.webp" },
+      { name: "Алымкул уулу Кубатбек",     photo: "./assets/media/members/3 Алымкул уулу Кубатбек.webp" },
+      { name: "Асанакунова Лира",   photo: "./assets/media/members/4 Асанакунова Лира.webp" },
+      { name: "Бермет Жакутбекова",             photo: "./assets/media/members/5 Бермет Жакутбекова.webp" },
+      { name: "Вокалдык ансамбль",      photo: "./assets/media/members/6 АНСАМБЛЬ КУРЕНКЕЕВ.webp" },
+      { name: "Исмаилов Улан",      photo: "./assets/media/members/7 Исмаилов Улан.webp" },
+      { name: "Калилова Айымкан", photo: "./assets/media/members/8 АЙЫМКАН.webp" },
+      { name: "Касаболотова Айгерим",     photo: "./assets/media/members/9 Касаболотова Айгерим.webp" },
+      { name: "Маматова Асел",     photo: "./assets/media/members/10 МАМАТОВА АСЕЛ.webp" },
+      { name: "Саматова Мончок",     photo: "./assets/media/members/11 Саматова Мончок.webp" },
+      { name: "Тажибаева Айдай",     photo: "./assets/media/members/12 Тажибаева Айдай.webp" },
+      { name: "Токтосунов Абдиназар",     photo: "./assets/media/members/13 Токтосунов Абдиназар.webp" },
     ];
 
     const app  = initializeApp(firebaseConfig);
@@ -507,7 +510,7 @@
       document.getElementById('juryUserEmail').textContent = currentUser.email;
 
       const juryId = currentUser.uid;
-      const existingDoc = await getDoc(doc(db, 'jury_votes', juryId));
+      const existingDoc = await getDoc(doc(db, 'jury_votes_voc_ins_per', juryId));
       if (existingDoc.exists()) {
         submittedScores = existingDoc.data().scores || {};
       }
@@ -592,7 +595,7 @@
       try {
         const juryId = currentUser.uid;
         submittedScores[name] = score;
-        await setDoc(doc(db, 'jury_votes', juryId), {
+        await setDoc(doc(db, 'jury_votes_voc_ins_per', juryId), {
           email: currentUser.email,
           scores: submittedScores,
           lastVoted: name,
