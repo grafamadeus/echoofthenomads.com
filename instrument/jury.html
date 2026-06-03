@@ -510,7 +510,7 @@
       document.getElementById('juryUserEmail').textContent = currentUser.email;
 
       const juryId = currentUser.uid;
-      const existingDoc = await getDoc(doc(db, 'jury_votes_voc_ins_per', juryId));
+      const existingDoc = await getDoc(doc(db, 'jury_votes_ins', juryId));
       if (existingDoc.exists()) {
         submittedScores = existingDoc.data().scores || {};
       }
@@ -595,7 +595,7 @@
       try {
         const juryId = currentUser.uid;
         submittedScores[name] = score;
-        await setDoc(doc(db, 'jury_votes_voc_ins_per', juryId), {
+        await setDoc(doc(db, 'jury_votes_ins', juryId), {
           email: currentUser.email,
           scores: submittedScores,
           lastVoted: name,

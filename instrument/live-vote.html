@@ -403,7 +403,7 @@
     let leadingName = null;
     let voteCounts = {};
 
-    onSnapshot(collection(db, 'votes_voc_ins_per'), (snapshot) => {
+    onSnapshot(collection(db, 'votes_ins'), (snapshot) => {
       // Считаем голоса
       const newCounts = {};
       PARTICIPANTS.forEach(p => { newCounts[p.name] = 0; });

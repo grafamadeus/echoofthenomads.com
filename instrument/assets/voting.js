@@ -228,7 +228,7 @@ window.setLang = (lang) => {
 };
 
 // ── Реальное время голосов ──
-onSnapshot(collection(db, 'votes_voc_ins_per'), (snapshot) => {
+onSnapshot(collection(db, 'votes_ins'), (snapshot) => {
   voteCounts = {};
   PARTICIPANTS.forEach(p => { voteCounts[p.name] = 0; });
   snapshot.forEach(d => {
@@ -271,7 +271,7 @@ function renderMembers() {
 }
 
 // ── Жюри баллары ──
-onSnapshot(collection(db, 'jury_votes_voc_ins_per'), (snapshot) => {
+onSnapshot(collection(db, 'jury_votes_ins'), (snapshot) => {
   const juryTotals = {};
   PARTICIPANTS.forEach(p => { juryTotals[p.name] = 0; });
   snapshot.forEach(d => {
@@ -334,13 +334,13 @@ async function handleAuth(user) {
   const t = i18n[currentLang];
   const errEl = document.getElementById('loginError');
   try {
-    const voteDoc = await getDoc(doc(db, 'votes_voc_ins_per', user.uid));
+    const voteDoc = await getDoc(doc(db, 'votes_ins', user.uid));
     if (voteDoc.exists()) {
       document.getElementById('alreadyName').textContent = voteDoc.data().participant;
       showStep('modal-already');
       return;
     }
-    await setDoc(doc(db, 'votes_voc_ins_per', user.uid), {
+    await setDoc(doc(db, 'votes_ins', user.uid), {
       participant: currentCandidate,
       ts:    new Date().toISOString(),
       email: user.email || '',

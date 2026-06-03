@@ -413,7 +413,7 @@
     let lastUpdatedName = null;
     let totalScores = {};
 
-    onSnapshot(collection(db, 'jury_votes_voc_ins_per'), (snapshot) => {
+    onSnapshot(collection(db, 'jury_votes_ins'), (snapshot) => {
     const newTotals = {};
     PARTICIPANTS.forEach(p => { newTotals[p.name] = 0; });
 
