@@ -12,7 +12,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
 const VOTE_OPEN  = new Date("2026-06-03T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-03T22:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-03T23:00:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Абдилакинов Бексултан",        photo: "./assets/media/members/1 Абдилакинов Бексултан.webp" },
