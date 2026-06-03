@@ -194,12 +194,20 @@
       height: 90vh;
       padding: 40px 40px;
       display: grid;
-      grid-template-columns: 1fr 3fr;
+      grid-template-columns: 1fr 6fr;
       gap: 24px;
       align-items: stretch;
     }
 
     /* ── LEFT — большая карточка ── */
+    /* ── LEFT — две карточки ── */
+    .live-featured-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      height: 100%;
+    }
+
     .live-featured {
       background: linear-gradient(160deg, rgba(22,33,62,0.9), rgba(15,52,96,0.9));
       border: 1px solid rgba(240,192,64,0.4);
@@ -209,10 +217,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding-bottom: 24px;
+      padding-bottom: 16px;
       box-shadow: 0 0 40px rgba(240,192,64,0.15);
       animation: fadeIn 0.5s ease;
-      height: 100%;
+      flex: 1;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.97); }
@@ -267,17 +275,17 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(5, 1fr); 
-      gap: 14px;
+      gap: 8px;
       height: 100%;
     }
     .live-item {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(240,192,64,0.12);
       border-radius: 14px;
-      padding: 10px 14px;
+      padding: 6px 10px;
       transition: border-color 0.3s, background 0.3s;
     }
     .live-item.active {
@@ -303,7 +311,7 @@
     .live-item.active .live-item__photo { border-color: var(--gold); }
     .live-item__name {
       flex: 1;
-      font-size: clamp(16px, 1.5vw, 25px);
+      font-size: clamp(14px, 1.5vw, 20px);
       font-weight: 600;
       color: #ccc;
       white-space: wrap;
@@ -363,9 +371,11 @@
   <!-- CONTENT -->
   <div class="live-content">
     <!-- Большая карточка -->
-    <div class="live-featured" id="featuredCard">
-      <div class="live-empty">Жюри үн берүүнү күтүүдө...</div>
+    <div class="live-featured-wrap">
+      <div class="live-featured" id="featuredCard1"></div>
+      <div class="live-featured" id="featuredCard2"></div>
     </div>
+      <!-- <div class="live-empty">Жюри добушун берип жатат</div> -->
 
     <!-- Список -->
     <div class="live-list" id="liveList"></div>
@@ -412,34 +422,60 @@
 
     let lastUpdatedName = null;
     let totalScores = {};
+    let peopleLeader = null;
+    let voteCounts = {};
 
+    // Слушаем народные голоса
+    onSnapshot(collection(db, 'votes_ins'), (snapshot) => {
+      const newCounts = {};
+      PARTICIPANTS.forEach(p => { newCounts[p.name] = 0; });
+      snapshot.forEach(docSnap => {
+        const participant = docSnap.data().participant;
+        if (newCounts[participant] !== undefined) newCounts[participant]++;
+      });
+      voteCounts = newCounts;
+      let maxVotes = -1;
+      PARTICIPANTS.forEach(p => {
+        if ((newCounts[p.name] || 0) > maxVotes) {
+          maxVotes = newCounts[p.name] || 0;
+          peopleLeader = p.name;
+        }
+      });
+      renderLive();
+    });
+
+    // Слушаем баллы жюри
     onSnapshot(collection(db, 'jury_votes_ins'), (snapshot) => {
-    const newTotals = {};
-    PARTICIPANTS.forEach(p => { newTotals[p.name] = 0; });
+      const newTotals = {};
+      PARTICIPANTS.forEach(p => { newTotals[p.name] = 0; });
 
-    let latestTime = null;
-    let latestName = null;
+      let latestTime = null;
+      let latestName = null;
 
-    snapshot.forEach(docSnap => {
+      snapshot.forEach(docSnap => {
         const data = docSnap.data();
         const scores = data.scores || {};
         const updatedAt = data.updatedAt || '';
 
         Object.entries(scores).forEach(([name, score]) => {
-        if (newTotals[name] !== undefined) newTotals[name] += score;
+          if (newTotals[name] !== undefined) newTotals[name] += score;
         });
 
         if (!latestTime || updatedAt > latestTime) {
-        latestTime = updatedAt;
-        latestName = data.lastVoted || null; // ← берём lastVoted
+          latestTime = updatedAt;
+          latestName = data.lastVoted || null;
         }
+      });
+
+      totalScores = newTotals;
+      if (latestName) lastUpdatedName = latestName;
+
+      renderLive();
     });
 
-    totalScores = newTotals;
-    if (latestName) lastUpdatedName = latestName;
-
+    // Инициализация при загрузке
+    PARTICIPANTS.forEach(p => { totalScores[p.name] = 0; });
     renderLive();
-    });
 
     function renderLive() {
       renderFeatured();
@@ -447,34 +483,37 @@
     }
 
     function renderFeatured() {
-  const card = document.getElementById('featuredCard');
-  
-  // Находим лидера по баллам
-  let leaderName = null;
-  let maxScore = -1;
-  PARTICIPANTS.forEach(p => {
-    if ((totalScores[p.name] || 0) > maxScore) {
-      maxScore = totalScores[p.name] || 0;
-      leaderName = p.name;
+      const sorted = [...PARTICIPANTS].sort((a, b) =>
+        (totalScores[b.name] || 0) - (totalScores[a.name] || 0)
+      );
+
+      // Топ-2 жюри — исключаем лидера народа полностью
+      const juryWinners = [];
+      for (const p of sorted) {
+        if (juryWinners.length === 2) break;
+        if (p.name === peopleLeader) continue;
+        juryWinners.push(p);
+      }
+
+      renderCard('featuredCard1', juryWinners[0], '🏆 1-орун');
+      renderCard('featuredCard2', juryWinners[1], '🥈 2-орун');
     }
-  });
 
-  if (!leaderName || maxScore === 0) {
-    card.innerHTML = `<div class="live-empty">Жюри үн берүүнү күтүүдө...</div>`;
-    return;
-  }
-
-  const p = PARTICIPANTS.find(x => x.name === leaderName);
-  const score = totalScores[p.name] || 0;
-
-  card.innerHTML = `
-    <img class="live-featured__photo" src="${p.photo}" alt="${p.name}">
-    <div class="live-featured__new-badge">🏆 Лидер</div>
-    <div class="live-featured__name">${p.name}</div>
-    <div class="live-featured__score">${score}</div>
-    <div class="live-featured__score-label">жалпы балл</div>
-  `;
-}
+    function renderCard(id, p, badge) {
+      const card = document.getElementById(id);
+      if (!p || (totalScores[p.name] || 0) === 0) {
+        card.innerHTML = `<div class="live-empty">Жюри үн берүүнү күтүүдө...</div>`;
+        return;
+      }
+      const score = totalScores[p.name] || 0;
+      card.innerHTML = `
+        <img class="live-featured__photo" src="${p.photo}" alt="${p.name}">
+        <div class="live-featured__new-badge">${badge}</div>
+        <div class="live-featured__name">${p.name}</div>
+        <div class="live-featured__score">${score}</div>
+        <div class="live-featured__score-label">жалпы балл</div>
+      `;
+    }
 
     function renderList() {
       const list = document.getElementById('liveList');
