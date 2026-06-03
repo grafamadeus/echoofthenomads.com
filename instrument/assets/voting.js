@@ -11,23 +11,23 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
 // ════════════════════════════════════
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-06-02T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-02T21:00:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-03T20:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-03T22:00:00+06:00");
 
 const PARTICIPANTS = [
-  { name: "Абылабек уулу Данияр",        photo: "./assets/media/members/1 Абылабек уулу Данияр.webp" },
-  { name: "Алыбеков Жакшылык",         photo: "./assets/media/members/2 Алыбеков Жакшылык.webp" },
-  { name: "Алымкул уулу Кубатбек",     photo: "./assets/media/members/3 Алымкул уулу Кубатбек.webp" },
-  { name: "Асанакунова Лира",   photo: "./assets/media/members/4 Асанакунова Лира.webp" },
-  { name: "Бермет Жакутбекова",             photo: "./assets/media/members/5 Бермет Жакутбекова.webp" },
-  { name: "Вокалдык ансамбль",      photo: "./assets/media/members/6 «Жалын» комузчулар ансамбли.png" },
-  { name: "Исмаилов Улан",      photo: "./assets/media/members/7 Исмаилов Улан.webp" },
-  { name: "Калилова Айымкан", photo: "./assets/media/members/8 АЙЫМКАН.webp" },
-  { name: "Касаболотова Айгерим",     photo: "./assets/media/members/9 Касаболотова Айгерим.webp" },
-  { name: "Маматова Асел",     photo: "./assets/media/members/10 МАМАТОВА АСЕЛ.webp" },
-  { name: "Саматова Мончок",     photo: "./assets/media/members/11 Саматова Мончок.webp" },
-  { name: "Тажибаева Айдай",     photo: "./assets/media/members/12 Тажибаева Айдай.webp" },
-  { name: "Токтосунов Абдиназар",     photo: "./assets/media/members/13 Токтосунов Абдиназар.webp" },
+  { name: "Абдилакинов Бексултан",        photo: "./assets/media/members/1 Абдилакинов Бексултан.webp" },
+  { name: "Абдылдаева Алтынай",         photo: "./assets/media/members/2 Абдылдаева Алтынай.webp" },
+  { name: "Ансамбль «Бийиктик»",     photo: "./assets/media/members/3 БИЙКТИК.webp" },
+  { name: "Шеркулов Намазбек",   photo: "./assets/media/members/4 Шеркулов Намазбек.webp" },
+  { name: "Ансамбль «Кербез»",             photo: "./assets/media/members/5 Ансамбль «Кербез».webp" },
+  { name: "«Жалын» комузчулар ансамбли",      photo: "./assets/media/members/6 АНСАМБЛЬ КУРЕНКЕЕВ.webp" },
+  { name: "Байызбекова Сезим",      photo: "./assets/media/members/7 Байызбекова Сезим.webp" },
+  { name: "Давранова Курбангүл", photo: "./assets/media/members/8 Давранова Курбангүл.webp" },
+  { name: "Давранова Курбангүл",     photo: "./assets/media/members/9 Зайирбек кызы Динара.webp" },
+  { name: "Кушбакова Сезимай",     photo: "./assets/media/members/10 Кушбакова Сезимай.webp" },
+  { name: "Нарматова Айназик",     photo: "./assets/media/members/11 Нарматова Айназик.webp" },
+  { name: "Таалайбеков Дастан",     photo: "./assets/media/members/12 Таалайбеков Дастан.webp" },
+  { name: "Ансамбль «Qaibar»",     photo: "./assets/media/members/13 QAIBAR.webp" },
 ];
 
 const firebaseConfig = {
@@ -45,10 +45,10 @@ const firebaseConfig = {
 // ════════════════════════════════════
 const i18n = {
   ru: {
-    logo:            "./assets/media/ru-02.webp",
+    logo:            "./assets/media/ru-03.webp",
     subtitle:        "Национальный отбор",
     date_label:      "Дата:",
-    date_text:       "2-июнь",
+    date_text:       "3-июнь",
     place_label:     "Место:",
     place_text:      "НТРК",
     cta_btn:         "Проголосовать",
@@ -85,7 +85,7 @@ const i18n = {
     already_for:     "Ваш голос учтён за:",
     already_note:    "Повторное голосование невозможно",
     close_btn:       "Закрыть",
-    alert_not_yet:   "Голосование ещё не началось. Оно откроется 2 июня 2026 года в 20:00.",
+    alert_not_yet:   "Голосование ещё не началось. Оно откроется 3 июня 2026 года в 20:00.",
     alert_closed:    "Голосование завершено. Спасибо за участие!",
     error_auth:      "Ошибка входа. Попробуйте снова.",
     error_general:   "Ошибка. Попробуйте снова.",
@@ -93,10 +93,10 @@ const i18n = {
     
   },
   ky: {
-    logo:            "./assets/media/kg-02.webp",
+    logo:            "./assets/media/kg-03.webp",
     subtitle:        "Улуттук тандоо",
     date_label:      "Дата:",
-    date_text:       "2-июнь",
+    date_text:       "3-июнь",
     place_label:     "Өтүүчү жери:",
     place_text:      "УТРК",
     cta_btn:         "Добуш берүү",
@@ -133,17 +133,17 @@ const i18n = {
     already_for:     "Сиздин добушуңуз эске алынды:",
     already_note:    "Кайра добуш берүү мүмкүн эмес",
     close_btn:       "Жабуу",
-    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 2-июнунда саат 20:00дө башталат.",
+    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 3-июнунда саат 20:00дө башталат.",
     alert_closed:    "Добуш берүү аяктады. Катышканыңыз үчүн рахмат!",
     error_auth:      "Ката. Кайра аракет кылыңыз.",
     error_general:   "Ката. Кайра аракет кылыңыз.",
     jury_title:      "Калыстар тобунун добуштары",
   },
   en: {
-    logo:            "./assets/media/eng-02.webp",
+    logo:            "./assets/media/eng-03.webp",
     subtitle:        "National Selection",
     date_label:      "Date:",
-    date_text:       "June 2",
+    date_text:       "June 3",
     place_label:     "Location:",
     place_text:      "UTRK",
     cta_btn:         "Voting",
@@ -180,7 +180,7 @@ const i18n = {
     already_for:     "Your vote was counted for:",
     already_note:    "Re-voting is not possible",
     close_btn:       "Close",
-    alert_not_yet:   "Voting has not started yet. It opens on June 2, 2026 at 20:00.",
+    alert_not_yet:   "Voting has not started yet. It opens on June 3, 2026 at 20:00.",
     alert_closed:    "Voting is closed. Thank you for participating!",
     error_auth:      "Sign-in error. Please try again.",
     error_general:   "Error. Please try again.",

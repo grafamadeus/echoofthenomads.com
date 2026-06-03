@@ -65,7 +65,7 @@ const contests = [
     ky: "АСПАПЧЫЛЫК БАГЫТЫ",
     ru: "ИНСТРУМЕНТАЛЬНОЕ ИСКУССТВО",
     en: "INSTRUMENTAL PERFORMANCE",
-    url: "#",
+    url: "./instrument/index.html",
     emoji: "3<br>июнь"
     },
     {
