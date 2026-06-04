@@ -5,7 +5,7 @@
 import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup }
                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
+import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp }
                              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ════════════════════════════════════
@@ -339,7 +339,7 @@ async function handleAuth(user) {
     }
     await setDoc(doc(db, 'votes_story', user.uid), {
       participant: currentCandidate,
-      ts:    new Date().toISOString(),
+      ts:    serverTimestamp(),
       email: user.email || '',
       name:  user.displayName || ''
     });
