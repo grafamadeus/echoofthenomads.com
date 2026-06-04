@@ -72,7 +72,7 @@ const contests = [
     ky: "АЙТУУЧУЛУК БАГЫТЫ",
     ru: "СКАЗИТЕЛЬСКОЕ ИСКУССТВО",
     en: "EPIC STORYTELLING",
-    url: "#",
+    url: "./story/index.html",
     emoji: "4<br>июнь"
     },
     {
