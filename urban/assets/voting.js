@@ -28,7 +28,7 @@ const PARTICIPANTS = [
   { name: "Элиза Шамшиева<br>«Аккула»",     photo: "./assets/media/members/11.webp" },
   { name: "Перизат Майрамбекова<br>«Асмандагы  кызгалдактар»",     photo: "./assets/media/members/12.webp" },
   { name: "Жанара Эсенбек кызы<br>«Сүт Ээси»",     photo: "./assets/media/members/13.webp" },
-  { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.jpg" },
+  { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.webp" },
   { name: "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ",     photo: "./assets/media/members/15.webp" },
 ];
 
