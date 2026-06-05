@@ -79,7 +79,7 @@ const contests = [
     ky: "УРБАН НОМАД",
     ru: "УРБАН НОМАД",
     en: "URBAN NOMAD",
-    url: "#",
+    url: "./urban",
     emoji: "5<br>июнь"
     },
     {
