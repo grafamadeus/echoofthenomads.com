@@ -12,7 +12,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimest
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
 const VOTE_OPEN  = new Date("2026-06-05T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-05T23:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-05T21:00:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Курманжан Абдыкалыкова <br> «12 Жамбы»",        photo: "./assets/media/members/1.webp" },
