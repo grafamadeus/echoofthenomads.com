@@ -194,7 +194,7 @@
       height: 90vh;
       padding: 40px 40px;
       display: grid;
-      grid-template-columns: 1fr 6fr;
+      grid-template-columns: 1fr 4fr;
       gap: 24px;
       align-items: stretch;
     }
@@ -273,7 +273,7 @@
     /* ── RIGHT — список ── */
     .live-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(5, 1fr); 
       gap: 8px;
       height: 100%;
@@ -373,9 +373,7 @@
     <!-- Большая карточка -->
     <div class="live-featured-wrap">
       <div class="live-featured" id="featuredCard1"></div>
-      <div class="live-featured" id="featuredCard2"></div>
     </div>
-      <!-- <div class="live-empty">Жюри добушун берип жатат</div> -->
 
     <!-- Список -->
     <div class="live-list" id="liveList"></div>
@@ -405,7 +403,7 @@
       { name: "Курманжан Абдыкалыкова <br> «12 Жамбы»",        photo: "./assets/media/members/1.webp" },
       { name: "Арзубек Вонама <br>«Падышалык мурас»",         photo: "./assets/media/members/2.webp" },
       { name: "Нурбекова А., Сүйөркул кызы Б., Муктарбек кызы А.<br>«Башат изи»",     photo: "./assets/media/members/3.webp" },
-      { name: "Сара Машарипова<br>«Мурастын коду»",   photo: "./assets/media/members/4 Кадыралиев Нурсултан.webp" },
+      { name: "Сара Машарипова<br>«Мурастын коду»",   photo: "./assets/media/members/4.webp" },
       { name: "Анипа Кадыракунова, Медина Нуркасым кызы<br>«Заман белгилери»",             photo: "./assets/media/members/5.webp" },
       { name: "Озодбек Дадабаев<br>«Алп Кара Куш»",      photo: "./assets/media/members/6.webp" },
       { name: "Аспандияр Жаныбеков<br>«Көрк»",      photo: "./assets/media/members/7.webp" },
@@ -415,7 +413,7 @@
       { name: "Элиза Шамшиева<br>«Аккула»",     photo: "./assets/media/members/11.webp" },
       { name: "Перизат Майрамбекова<br>«Асмандагы  кызгалдактар»",     photo: "./assets/media/members/12.webp" },
       { name: "Жанара Эсенбек кызы<br>«Сүт Ээси»",     photo: "./assets/media/members/13.webp" },
-      { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.webp" },
+      { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.jpg" },
       { name: "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ",     photo: "./assets/media/members/15.webp" },
     ];
 
@@ -498,7 +496,7 @@
       }
 
       renderCard('featuredCard1', juryWinners[0], '🏆 1-орун');
-      renderCard('featuredCard2', juryWinners[1], '🥈 2-орун');
+      // renderCard('featuredCard2', juryWinners[1], '🥈 2-орун');
     }
 
     function renderCard(id, p, badge) {

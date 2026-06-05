@@ -219,7 +219,7 @@
       to   { opacity: 1; transform: scale(1); }
     }
     .live-featured__photo {
-      width: 100%;
+      width: 80%;
       flex: 1; 
       object-fit: contain;
       object-position: top;
@@ -265,10 +265,12 @@
     /* ── RIGHT — список ── */
     .live-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(5, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 8px;
       height: 100%;
+      /* overflow-y: auto; */
+      align-content: start;
     }
     .live-item {
       display: flex;
@@ -277,7 +279,7 @@
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(240,192,64,0.12);
       border-radius: 14px;
-      padding: 14px 18px;
+      padding: 10px 14px;
       transition: border-color 0.3s, background 0.3s;
     }
     .live-item.active {
@@ -294,7 +296,7 @@
     }
     .live-item.active .live-item__num { color: var(--gold); }
     .live-item__photo {
-      width: 100px; height: 100px;
+      width: 60px; height: 60px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid rgba(240,192,64,0.3);
@@ -303,7 +305,7 @@
     .live-item.active .live-item__photo { border-color: var(--gold); }
     .live-item__name {
       flex: 1;
-      font-size: clamp(16px, 1.8vw, 25px);
+      font-size: clamp(16px, 1.8vw, 20px);
       font-weight: 600;
       color: #ccc;
       white-space: wrap;
@@ -385,7 +387,7 @@
       { name: "Курманжан Абдыкалыкова <br> «12 Жамбы»",        photo: "./assets/media/members/1.webp" },
       { name: "Арзубек Вонама <br>«Падышалык мурас»",         photo: "./assets/media/members/2.webp" },
       { name: "Нурбекова А., Сүйөркул кызы Б., Муктарбек кызы А.<br>«Башат изи»",     photo: "./assets/media/members/3.webp" },
-      { name: "Сара Машарипова<br>«Мурастын коду»",   photo: "./assets/media/members/4 Кадыралиев Нурсултан.webp" },
+      { name: "Сара Машарипова<br>«Мурастын коду»",   photo: "./assets/media/members/4.webp" },
       { name: "Анипа Кадыракунова, Медина Нуркасым кызы<br>«Заман белгилери»",             photo: "./assets/media/members/5.webp" },
       { name: "Озодбек Дадабаев<br>«Алп Кара Куш»",      photo: "./assets/media/members/6.webp" },
       { name: "Аспандияр Жаныбеков<br>«Көрк»",      photo: "./assets/media/members/7.webp" },
@@ -395,7 +397,7 @@
       { name: "Элиза Шамшиева<br>«Аккула»",     photo: "./assets/media/members/11.webp" },
       { name: "Перизат Майрамбекова<br>«Асмандагы  кызгалдактар»",     photo: "./assets/media/members/12.webp" },
       { name: "Жанара Эсенбек кызы<br>«Сүт Ээси»",     photo: "./assets/media/members/13.webp" },
-      { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.webp" },
+      { name: "Коллективная работа АИК<br>«Бугу Эне» ",     photo: "./assets/media/members/14.jpg" },
       { name: "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ",     photo: "./assets/media/members/15.webp" },
     ];
 
