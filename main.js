@@ -86,7 +86,7 @@ const contests = [
     ky: "КӨЧМӨН ЖЫЛДЫЗДАРЫ",
     ru: "НОМАД СТАРС",
     en: "NOMAD STARS",
-    url: "#",
+    url: "./stars",
     emoji: "6<br>июнь"
     },
     {
