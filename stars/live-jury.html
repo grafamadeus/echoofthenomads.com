@@ -513,6 +513,7 @@
 
       const top9 = [...PARTICIPANTS]
         .sort((a, b) => (totalScores[b.name] || 0) - (totalScores[a.name] || 0))
+        .filter(p => p.name !== peopleLeader)
         .slice(0, 9);
 
       top9.forEach((p, idx) => {
