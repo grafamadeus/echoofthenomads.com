@@ -12,7 +12,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimest
 // 🔧 НАСТРОЙКИ
 // ════════════════════════════════════
 const VOTE_OPEN  = new Date("2026-06-07T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-07T23:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-07T21:00:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Осмоналиева Алтынай ",        photo: "./assets/media/members/1.webp" },
