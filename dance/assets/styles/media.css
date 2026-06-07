@@ -1,0 +1,137 @@
+/* ═══════════════════════════════════════
+   АДАПТАЦИЯ — ПЛАНШЕТ (Samsung Tab A9 ~740px)
+   ═══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .member-row {
+    flex-wrap: wrap;
+  }
+  .member-rank {
+    flex-shrink: 0;
+  }
+  .member-vote-btn {
+    width: 100%;
+    margin-top: 6px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+@media (min-width: 600px) {
+.about__container,
+.nation > .container,
+.members__container,
+.footer__container {
+max-width: 680px;
+}
+
+.header > .container {
+    max-width: none;
+}
+.hero__cd-cell .num {
+font-size: 38px;
+}
+.hero__cd-cell .unit {
+font-size: 11px;
+}
+.hero__cta-btn {
+font-size: 20px;
+padding: 20px;
+}
+.nation__box {
+grid-template-rows: none;
+grid-template-columns: 1fr 1fr;
+column-gap: 16px;
+}
+.nation__box-items.third {
+  grid-column: 1 / -1; 
+
+}
+.members__list {
+gap: 16px;
+}
+.member-photo {
+width: 70px;
+height: 70px;
+}
+.member-name {
+font-size: 1rem;
+}
+.member-votes {
+font-size: 0.85rem;
+}
+.member-vote-btn {
+padding: 10px 20px;
+font-size: 0.9rem;
+}
+.member-rank {
+font-size: 1.4rem;
+width: 36px;
+}
+.modal-box {
+max-width: 440px;
+padding: 40px 32px 36px;
+}
+.footer__icon {
+width: 42px;
+height: 42px;
+}
+.footer__icon svg {
+width: 20px;
+height: 20px;
+}
+}
+
+/* ═══════════════════════════════════════
+АДАПТАЦИЯ — ДЕСКТОП (1024px+)
+═══════════════════════════════════════ */
+@media (min-width: 1024px) {
+.hero__container,
+.footer__container {
+max-width: 100%;
+}
+.header > .container {
+max-width: 100%;
+padding: 0 40px;
+}
+.hero__logo {
+width: 640px;
+height: 520px;
+}
+.hero__info-row {
+gap: 120px;
+}
+.hero__info-item .value {
+font-size: 22px;
+}
+.hero__cd-cell .num {
+font-size: 44px;
+}
+.nation__box {
+grid-template-columns: 1fr 1fr;
+grid-template-rows: auto auto;
+column-gap: 24px;
+}
+.nation__box-items.third {
+  grid-column: 1 / -1; 
+
+}
+.member-row {
+padding: 16px 20px;
+gap: 16px;
+}
+.member-photo {
+width: 80px;
+height: 80px;
+}
+.member-name {
+font-size: 1.1rem;
+}
+.member-vote-btn {
+padding: 12px 24px;
+font-size: 0.95rem;
+}
+.about__container {
+padding: 60px 40px 40px;
+font-size: 16px;
+line-height: 1.7;
+}
+}

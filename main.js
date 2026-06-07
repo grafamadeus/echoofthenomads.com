@@ -93,7 +93,7 @@ const contests = [
     ky: "ЭТНО-БИЙ",
     ru: "ЭТНО-ТАНЕЦ",
     en: "ETHNIC DANCE",
-    url: "#",
+    url: "./dance",
     emoji: "7<br>июнь"
     },
     
