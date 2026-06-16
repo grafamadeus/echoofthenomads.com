@@ -1,16 +1,4 @@
-// ═══════════════════════════════════════════════
-// voting.js — Firebase + голосование + i18n
-// ═══════════════════════════════════════════════
 
-import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ════════════════════════════════════
-// 🔧 НАСТРОЙКИ
-// ════════════════════════════════════
 const VOTE_OPEN  = new Date("2026-06-07T20:00:00+06:00");
 const VOTE_CLOSE = new Date("2026-06-07T21:00:00+06:00");
 
@@ -25,14 +13,7 @@ const PARTICIPANTS = [
   { name: "Токтосунов Тынчтыкбек ", photo: "./assets/media/members/8.webp" },
 ];
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBLA3dWcxxvNrXlfMtVOwWC1n3cUHORils",
-  authDomain: "national-selection.firebaseapp.com",
-  projectId: "national-selection",
-  storageBucket: "national-selection.firebasestorage.app",
-  messagingSenderId: "753183678536",
-  appId: "1:753183678536:web:cbab2779087c0b8e73f87d"
-};
+
 // ════════════════════════════════════
 
 // ════════════════════════════════════
@@ -185,12 +166,7 @@ const i18n = {
 };
 // ════════════════════════════════════
 
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
 let currentCandidate = null;
-let voteCounts = {};
 let currentLang = 'ru';
 
 // ── Применить язык ──
@@ -223,15 +199,16 @@ window.setLang = (lang) => {
 };
 
 // ── Реальное время голосов ──
-onSnapshot(collection(db, 'votes_dance'), (snapshot) => {
-  voteCounts = {};
-  PARTICIPANTS.forEach(p => { voteCounts[p.name] = 0; });
-  snapshot.forEach(d => {
-    const p = d.data().participant;
-    if (voteCounts[p] !== undefined) voteCounts[p]++;
-  });
-  renderMembers();
-});
+const voteCounts = {
+  "Осмоналиева Алтынай ": 3853,
+  "Алжанов Руслан ": 2288,
+  "Асанбеков Өмүр и Эмир": 99,
+  "Хажиева Наргиза ": 1236,
+  "Кийизбаев Тилек ": 1167,
+  "Белоус Екатерина ": 183,
+  "Иманкулов Саади ": 321,
+  "Токтосунов Тынчтыкбек ": 2630,
+};
 
 // ── Рендер списка участников ──
 function renderMembers() {
@@ -266,17 +243,16 @@ function renderMembers() {
 }
 
 // ── Жюри баллары ──
-onSnapshot(collection(db, 'jury_votes_dance'), (snapshot) => {
-  const juryTotals = {};
-  PARTICIPANTS.forEach(p => { juryTotals[p.name] = 0; });
-  snapshot.forEach(d => {
-    const scores = d.data().scores || {};
-    Object.entries(scores).forEach(([name, score]) => {
-      if (juryTotals[name] !== undefined) juryTotals[name] += score;
-    });
-  });
-  renderJuryScores(juryTotals);
-});
+const juryTotals = {
+  "Осмоналиева Алтынай ": 0,
+  "Алжанов Руслан ": 19,
+  "Асанбеков Өмүр и Эмир": 15,
+  "Хажиева Наргиза ": 15,
+  "Кийизбаев Тилек ": 18,
+  "Белоус Екатерина ": 18,
+  "Иманкулов Саади ": 20,
+  "Токтосунов Тынчтыкбек ": 19,
+};
 
 function renderJuryScores(juryTotals) {
   const list = document.getElementById('juryScoresList');
@@ -324,48 +300,11 @@ window.handleOverlayClick = (e) => {
   if (e.target.id === 'voteModal') window.closeModal();
 };
 
-// ── Обработка после входа ──
-async function handleAuth(user) {
-  const t = i18n[currentLang];
-  const errEl = document.getElementById('loginError');
-  try {
-    const voteDoc = await getDoc(doc(db, 'votes_dance', user.uid));
-    if (voteDoc.exists()) {
-      document.getElementById('alreadyName').textContent = voteDoc.data().participant;
-      showStep('modal-already');
-      return;
-    }
-    await setDoc(doc(db, 'votes_dance', user.uid), {
-      participant: currentCandidate,
-      ts:    serverTimestamp(),
-      email: user.email || '',
-      name:  user.displayName || ''
-    });
-    document.getElementById('successName').textContent = currentCandidate;
-    showStep('modal-success');
-  } catch (e) {
-    errEl.textContent = t.error_general;
-    console.error(e);
-  }
-}
 
-// ── Google ──
-window.signInWithGoogle = async () => {
-  const btn = document.getElementById('googleBtn');
-  const t = i18n[currentLang];
-  btn.disabled = true;
-  document.getElementById('loginError').textContent = '';
-  try {
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    await handleAuth(result.user);
-  } catch (e) {
-    if (e.code !== 'auth/popup-closed-by-user')
-      document.getElementById('loginError').textContent = t.error_auth;
-  }
-  btn.disabled = false;
-};
 
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
   setLang('ky');
+  renderMembers();
+  renderJuryScores(juryTotals);
 });

@@ -1,20 +1,6 @@
-// ═══════════════════════════════════════════════
-// voting.js — Firebase + голосование + i18n
-// Подключи в index.html:
-// <script type="module" src="./assets/voting.js"></script>
-// ═══════════════════════════════════════════════
 
-import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ════════════════════════════════════
-// 🔧 НАСТРОЙКИ
-// ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-06-01T00:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-01T22:30:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-07T20:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-07T21:00:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
@@ -29,14 +15,7 @@ const PARTICIPANTS = [
   { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
 ];
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBLA3dWcxxvNrXlfMtVOwWC1n3cUHORils",
-  authDomain: "national-selection.firebaseapp.com",
-  projectId: "national-selection",
-  storageBucket: "national-selection.firebasestorage.app",
-  messagingSenderId: "753183678536",
-  appId: "1:753183678536:web:cbab2779087c0b8e73f87d"
-};
+
 // ════════════════════════════════════
 
 // ════════════════════════════════════
@@ -47,7 +26,7 @@ const i18n = {
     logo:            "./assets/media/echo-nomad-ru.webp",
     subtitle:        "Национальный отбор",
     date_label:      "Дата:",
-    date_text:       "1-июнь",
+    date_text:       "7-июнь",
     place_label:     "Место:",
     place_text:      "НТРК",
     cta_btn:         "Проголосовать",
@@ -69,7 +48,7 @@ const i18n = {
     stage2_title:    "Отборочный тур",
     stage2_desc:     "Проводится на основании видеоматериалов участников.",
     stage3_title:    "Финальный этап",
-    stage3_desc:     "Финальное прослушивание и определение победителей (1-июня 2026 г.)",
+    stage3_desc:     "Финальное прослушивание и определение победителей (1-7-июня 2026 г.)",
     members_title:   "Участники",
     votes_label:     "Всего голосов:",
     vote_btn:        "Голосовать",
@@ -84,10 +63,9 @@ const i18n = {
     already_for:     "Ваш голос учтён за:",
     already_note:    "Повторное голосование невозможно",
     close_btn:       "Закрыть",
-    alert_not_yet:   "Голосование ещё не началось. Оно откроется 1 июня 2026 года в 20:00.",
+    alert_not_yet:   "Голосование ещё не началось. Оно откроется 7 июня 2026 года в 20:00.",
     alert_closed:    "Голосование завершено. Спасибо за участие!",
     error_auth:      "Ошибка входа. Попробуйте снова.",
-    error_apple:     "Ошибка входа через Apple. Попробуйте через Google.",
     error_general:   "Ошибка. Попробуйте снова.",
     jury_title:      "Баллы жюри",
     
@@ -96,7 +74,7 @@ const i18n = {
     logo:            "./assets/media/echo-nomad-kg.webp",
     subtitle:        "Улуттук тандоо",
     date_label:      "Дата:",
-    date_text:       "1-июнь",
+    date_text:       "7-июнь",
     place_label:     "Өтүүчү жери:",
     place_text:      "УТРК",
     cta_btn:         "Добуш берүү",
@@ -118,7 +96,7 @@ const i18n = {
     stage2_title:    "Тандоо туру",
     stage2_desc:     "Катышуучулардын видеоматериалдарынын негизинде өткөрүлдү.",
     stage3_title:    "Финалдык этап",
-    stage3_desc:     "Акыркы аудит жана жеңүүчүлөрдү тандоо (2026-жылдын 1-июну)",
+    stage3_desc:     "Акыркы аудит жана жеңүүчүлөрдү тандоо (2026-жылдын 1-7-июну)",
     members_title:   "Катышуучулар",
     votes_label:     "Жалпы добуштар:",
     vote_btn:        "Добуш берүү",
@@ -133,10 +111,9 @@ const i18n = {
     already_for:     "Сиздин добушуңуз эске алынды:",
     already_note:    "Кайра добуш берүү мүмкүн эмес",
     close_btn:       "Жабуу",
-    alert_not_yet:   "Добуш берүү азырынча башталган жок. 2026-жылдын 1-июнунда саат 20:00дө башталат.",
+    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 7-июнунда саат 20:00дө башталат.",
     alert_closed:    "Добуш берүү аяктады. Катышканыңыз үчүн рахмат!",
     error_auth:      "Ката. Кайра аракет кылыңыз.",
-    error_apple:     "Apple аркылуу кирүүдө ката. Google аркылуу аракет кылыңыз.",
     error_general:   "Ката. Кайра аракет кылыңыз.",
     jury_title:      "Калыстар тобунун добуштары",
   },
@@ -144,7 +121,7 @@ const i18n = {
     logo:            "./assets/media/echo-nomad-en.webp",
     subtitle:        "National Selection",
     date_label:      "Date:",
-    date_text:       "June 1",
+    date_text:       "June 7",
     place_label:     "Location:",
     place_text:      "UTRK",
     cta_btn:         "Voting",
@@ -152,7 +129,7 @@ const i18n = {
     cd_hour:         "hour",
     cd_min:          "min",
     cd_sec:          "sec",
-    vote_time:       "Voting is available from 20:00 till the end",
+    vote_time:       "Voting is available from 20:00 till the end of competition",
     about_title:     "ABOUT THE FESTIVAL",
     about_text:      `The competition is held in two stages within the deadlines set by the Organizer:<br><br>
                      <span class="bold">Stage I</span> – Qualifying Round (National Level):<br>
@@ -166,7 +143,7 @@ const i18n = {
     stage2_title:    "Qualifying Round",
     stage2_desc:     "Conducted based on video materials submitted by participants.",
     stage3_title:    "Final Stage",
-    stage3_desc:     "Final audition and winner selection (June 1, 2026)",
+    stage3_desc:     "Final audition and winner selection (June 1-7, 2026)",
     members_title:   "Participants",
     votes_label:     "Total votes:",
     vote_btn:        "Vote",
@@ -181,10 +158,9 @@ const i18n = {
     already_for:     "Your vote was counted for:",
     already_note:    "Re-voting is not possible",
     close_btn:       "Close",
-    alert_not_yet:   "Voting has not started yet. It opens on June 1, 2026 at 20:00.",
+    alert_not_yet:   "Voting has not started yet. It opens on June 7, 2026 at 20:00.",
     alert_closed:    "Voting is closed. Thank you for participating!",
     error_auth:      "Sign-in error. Please try again.",
-    error_apple:     "Apple sign-in error. Try Google instead.",
     error_general:   "Error. Please try again.",
     jury_title:      "Jury Scores",
 
@@ -192,12 +168,7 @@ const i18n = {
 };
 // ════════════════════════════════════
 
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
 let currentCandidate = null;
-let voteCounts = {};
 let currentLang = 'ru';
 
 // ── Применить язык ──
@@ -230,15 +201,18 @@ window.setLang = (lang) => {
 };
 
 // ── Реальное время голосов ──
-onSnapshot(collection(db, 'votes'), (snapshot) => {
-  voteCounts = {};
-  PARTICIPANTS.forEach(p => { voteCounts[p.name] = 0; });
-  snapshot.forEach(d => {
-    const p = d.data().participant;
-    if (voteCounts[p] !== undefined) voteCounts[p]++;
-  });
-  renderMembers();
-});
+const voteCounts = {
+  "Абдышова Үмүтай": 198,
+  "Абжалова Луиза": 61,
+  "Сонунбеков Байаман": 212,
+  "Деркембаев Нурдөөлөт": 2297,
+  "Нур Чолпон": 294,
+  "Нурбек уулу Эржан": 487,
+  "Сапарбайева Амина": 2272,
+  "Сатыбалдиева Бактыгүл": 221,
+  "Старбеков Рыскелди": 152,
+  "Черикова Нуркамила": 1142,
+};
 
 // ── Рендер списка участников ──
 function renderMembers() {
@@ -273,17 +247,18 @@ function renderMembers() {
 }
 
 // ── Жюри баллары ──
-onSnapshot(collection(db, 'jury_votes'), (snapshot) => {
-  const juryTotals = {};
-  PARTICIPANTS.forEach(p => { juryTotals[p.name] = 0; });
-  snapshot.forEach(d => {
-    const scores = d.data().scores || {};
-    Object.entries(scores).forEach(([name, score]) => {
-      if (juryTotals[name] !== undefined) juryTotals[name] += score;
-    });
-  });
-  renderJuryScores(juryTotals);
-});
+const juryTotals = {
+  "Абдышова Үмүтай": 22,
+  "Абжалова Луиза": 23,
+  "Сонунбеков Байаман": 25,
+  "Деркембаев Нурдөөлөт": 27,
+  "Нур Чолпон": 28,
+  "Нурбек уулу Эржан": 27,
+  "Сапарбайева Амина": 28,
+  "Сатыбалдиева Бактыгүл": 24,
+  "Старбеков Рыскелди": 30,
+  "Черикова Нуркамила": 23,
+};
 
 function renderJuryScores(juryTotals) {
   const list = document.getElementById('juryScoresList');
@@ -331,48 +306,11 @@ window.handleOverlayClick = (e) => {
   if (e.target.id === 'voteModal') window.closeModal();
 };
 
-// ── Обработка после входа ──
-async function handleAuth(user) {
-  const t = i18n[currentLang];
-  const errEl = document.getElementById('loginError');
-  try {
-    const voteDoc = await getDoc(doc(db, 'votes', user.uid));
-    if (voteDoc.exists()) {
-      document.getElementById('alreadyName').textContent = voteDoc.data().participant;
-      showStep('modal-already');
-      return;
-    }
-    await setDoc(doc(db, 'votes', user.uid), {
-      participant: currentCandidate,
-      ts:    new Date().toISOString(),
-      email: user.email || '',
-      name:  user.displayName || ''
-    });
-    document.getElementById('successName').textContent = currentCandidate;
-    showStep('modal-success');
-  } catch (e) {
-    errEl.textContent = t.error_general;
-    console.error(e);
-  }
-}
 
-// ── Google ──
-window.signInWithGoogle = async () => {
-  const btn = document.getElementById('googleBtn');
-  const t = i18n[currentLang];
-  btn.disabled = true;
-  document.getElementById('loginError').textContent = '';
-  try {
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    await handleAuth(result.user);
-  } catch (e) {
-    if (e.code !== 'auth/popup-closed-by-user')
-      document.getElementById('loginError').textContent = t.error_auth;
-  }
-  btn.disabled = false;
-};
 
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
   setLang('ky');
+  renderMembers();
+  renderJuryScores(juryTotals);
 });

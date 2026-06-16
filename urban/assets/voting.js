@@ -1,18 +1,6 @@
-// ═══════════════════════════════════════════════
-// voting.js — Firebase + голосование + i18n
-// ═══════════════════════════════════════════════
 
-import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp }
-                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ════════════════════════════════════
-// 🔧 НАСТРОЙКИ
-// ════════════════════════════════════
-const VOTE_OPEN  = new Date("2026-06-05T20:00:00+06:00");
-const VOTE_CLOSE = new Date("2026-06-05T21:00:00+06:00");
+const VOTE_OPEN  = new Date("2026-06-07T20:00:00+06:00");
+const VOTE_CLOSE = new Date("2026-06-07T21:00:00+06:00");
 
 const PARTICIPANTS = [
   { name: "Курманжан Абдыкалыкова <br> «12 Жамбы»",        photo: "./assets/media/members/1.webp" },
@@ -32,14 +20,7 @@ const PARTICIPANTS = [
   { name: "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ",     photo: "./assets/media/members/15.webp" },
 ];
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBLA3dWcxxvNrXlfMtVOwWC1n3cUHORils",
-  authDomain: "national-selection.firebaseapp.com",
-  projectId: "national-selection",
-  storageBucket: "national-selection.firebasestorage.app",
-  messagingSenderId: "753183678536",
-  appId: "1:753183678536:web:cbab2779087c0b8e73f87d"
-};
+
 // ════════════════════════════════════
 
 // ════════════════════════════════════
@@ -50,7 +31,7 @@ const i18n = {
     logo:            "./assets/media/ru-05.webp",
     subtitle:        "Национальный отбор",
     date_label:      "Дата:",
-    date_text:       "5-июнь",
+    date_text:       "7-июнь",
     place_label:     "Место:",
     place_text:      "НТРК",
     cta_btn:         "Проголосовать",
@@ -87,7 +68,7 @@ const i18n = {
     already_for:     "Ваш голос учтён за:",
     already_note:    "Повторное голосование невозможно",
     close_btn:       "Закрыть",
-    alert_not_yet:   "Голосование ещё не началось. Оно откроется 5 июня 2026 года в 20:00.",
+    alert_not_yet:   "Голосование ещё не началось. Оно откроется 7 июня 2026 года в 20:00.",
     alert_closed:    "Голосование завершено. Спасибо за участие!",
     error_auth:      "Ошибка входа. Попробуйте снова.",
     error_general:   "Ошибка. Попробуйте снова.",
@@ -98,7 +79,7 @@ const i18n = {
     logo:            "./assets/media/kg-05.webp",
     subtitle:        "Улуттук тандоо",
     date_label:      "Дата:",
-    date_text:       "5-июнь",
+    date_text:       "7-июнь",
     place_label:     "Өтүүчү жери:",
     place_text:      "УТРК",
     cta_btn:         "Добуш берүү",
@@ -135,7 +116,7 @@ const i18n = {
     already_for:     "Сиздин добушуңуз эске алынды:",
     already_note:    "Кайра добуш берүү мүмкүн эмес",
     close_btn:       "Жабуу",
-    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 5-июнунда саат 20:00дө башталат.",
+    alert_not_yet:   "Добуш берүү азырынча баштала элек. 2026-жылдын 7-июнунда саат 20:00дө башталат.",
     alert_closed:    "Добуш берүү аяктады. Катышканыңыз үчүн рахмат!",
     error_auth:      "Ката. Кайра аракет кылыңыз.",
     error_general:   "Ката. Кайра аракет кылыңыз.",
@@ -145,7 +126,7 @@ const i18n = {
     logo:            "./assets/media/eng-05.webp",
     subtitle:        "National Selection",
     date_label:      "Date:",
-    date_text:       "June 5",
+    date_text:       "June 7",
     place_label:     "Location:",
     place_text:      "UTRK",
     cta_btn:         "Voting",
@@ -182,7 +163,7 @@ const i18n = {
     already_for:     "Your vote was counted for:",
     already_note:    "Re-voting is not possible",
     close_btn:       "Close",
-    alert_not_yet:   "Voting has not started yet. It opens on June 5, 2026 at 20:00.",
+    alert_not_yet:   "Voting has not started yet. It opens on June 7, 2026 at 20:00.",
     alert_closed:    "Voting is closed. Thank you for participating!",
     error_auth:      "Sign-in error. Please try again.",
     error_general:   "Error. Please try again.",
@@ -192,12 +173,7 @@ const i18n = {
 };
 // ════════════════════════════════════
 
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
 let currentCandidate = null;
-let voteCounts = {};
 let currentLang = 'ru';
 
 // ── Применить язык ──
@@ -230,15 +206,23 @@ window.setLang = (lang) => {
 };
 
 // ── Реальное время голосов ──
-onSnapshot(collection(db, 'votes_urban'), (snapshot) => {
-  voteCounts = {};
-  PARTICIPANTS.forEach(p => { voteCounts[p.name] = 0; });
-  snapshot.forEach(d => {
-    const p = d.data().participant;
-    if (voteCounts[p] !== undefined) voteCounts[p]++;
-  });
-  renderMembers();
-});
+const voteCounts = {
+  "Курманжан Абдыкалыкова <br> «12 Жамбы»": 316,
+  "Арзубек Вонама <br>«Падышалык мурас»": 59,
+  "Нурбекова А., Сүйөркул кызы Б., Муктарбек кызы А.<br>«Башат изи»": 112,
+  "Сара Машарипова<br>«Мурастын коду»": 184,
+  "Анипа Кадыракунова, Медина Нуркасым кызы<br>«Заман белгилери»": 68,
+  "Озодбек Дадабаев<br>«Алп Кара Куш»": 46,
+  "Аспандияр Жаныбеков<br>«Көрк»": 339,
+  "Альбина Дайырова<br>«Илбирстин изи менен»": 106,
+  "Каныкей Батырова<br>«Жети облустун мурасы»": 343,
+  "Аяна Алымкулова<br>«Renaissance of KRSU»": 779,
+  "Элиза Шамшиева<br>«Аккула»": 44,
+  "Перизат Майрамбекова<br>«Асмандагы  кызгалдактар»": 254,
+  "Жанара Эсенбек кызы<br>«Сүт Ээси»": 34,
+  "Коллективная работа АИК<br>«Бугу Эне» ": 795,
+  "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ": 494,
+};
 
 // ── Рендер списка участников ──
 function renderMembers() {
@@ -273,17 +257,23 @@ function renderMembers() {
 }
 
 // ── Жюри баллары ──
-onSnapshot(collection(db, 'jury_votes_urban'), (snapshot) => {
-  const juryTotals = {};
-  PARTICIPANTS.forEach(p => { juryTotals[p.name] = 0; });
-  snapshot.forEach(d => {
-    const scores = d.data().scores || {};
-    Object.entries(scores).forEach(([name, score]) => {
-      if (juryTotals[name] !== undefined) juryTotals[name] += score;
-    });
-  });
-  renderJuryScores(juryTotals);
-});
+const juryTotals = {
+  "Курманжан Абдыкалыкова <br> «12 Жамбы»": 17,
+  "Арзубек Вонама <br>«Падышалык мурас»": 20,
+  "Нурбекова А., Сүйөркул кызы Б., Муктарбек кызы А.<br>«Башат изи»": 18,
+  "Сара Машарипова<br>«Мурастын коду»": 20,
+  "Анипа Кадыракунова, Медина Нуркасым кызы<br>«Заман белгилери»": 23,
+  "Озодбек Дадабаев<br>«Алп Кара Куш»": 29,
+  "Аспандияр Жаныбеков<br>«Көрк»": 28,
+  "Альбина Дайырова<br>«Илбирстин изи менен»": 22,
+  "Каныкей Батырова<br>«Жети облустун мурасы»": 15,
+  "Аяна Алымкулова<br>«Renaissance of KRSU»": 22,
+  "Элиза Шамшиева<br>«Аккула»": 21,
+  "Перизат Майрамбекова<br>«Асмандагы  кызгалдактар»": 17,
+  "Жанара Эсенбек кызы<br>«Сүт Ээси»": 20,
+  "Коллективная работа АИК<br>«Бугу Эне» ": 20,
+  "Заманбекова А., Сеиткулова Н., Пирматова З.<br>«Нео номад» ": 19,
+};
 
 function renderJuryScores(juryTotals) {
   const list = document.getElementById('juryScoresList');
@@ -331,48 +321,11 @@ window.handleOverlayClick = (e) => {
   if (e.target.id === 'voteModal') window.closeModal();
 };
 
-// ── Обработка после входа ──
-async function handleAuth(user) {
-  const t = i18n[currentLang];
-  const errEl = document.getElementById('loginError');
-  try {
-    const voteDoc = await getDoc(doc(db, 'votes_urban', user.uid));
-    if (voteDoc.exists()) {
-      document.getElementById('alreadyName').textContent = voteDoc.data().participant;
-      showStep('modal-already');
-      return;
-    }
-    await setDoc(doc(db, 'votes_urban', user.uid), {
-      participant: currentCandidate,
-      ts:    serverTimestamp(),
-      email: user.email || '',
-      name:  user.displayName || ''
-    });
-    document.getElementById('successName').textContent = currentCandidate;
-    showStep('modal-success');
-  } catch (e) {
-    errEl.textContent = t.error_general;
-    console.error(e);
-  }
-}
 
-// ── Google ──
-window.signInWithGoogle = async () => {
-  const btn = document.getElementById('googleBtn');
-  const t = i18n[currentLang];
-  btn.disabled = true;
-  document.getElementById('loginError').textContent = '';
-  try {
-    const result = await signInWithPopup(auth, new GoogleAuthProvider());
-    await handleAuth(result.user);
-  } catch (e) {
-    if (e.code !== 'auth/popup-closed-by-user')
-      document.getElementById('loginError').textContent = t.error_auth;
-  }
-  btn.disabled = false;
-};
 
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
   setLang('ky');
+  renderMembers();
+  renderJuryScores(juryTotals);
 });
