@@ -58,12 +58,16 @@ window.observeReveals = function () {
     els.forEach(el => revealObserver.observe(el));
 };
 
-// ── Ridge parallax (subtle, clipped inside the hero) ──
+// ── Ridge parallax — each layer drifts at its own rate, clipped inside the hero ──
+const reduceMotion = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
 function updateRidge() {
-    const y = Math.min(window.scrollY, 500);
-    document.querySelectorAll('.ridge').forEach(ridge => {
-        const k = parseFloat(ridge.dataset.parallax || '0.15');
-        ridge.style.transform = 'translateY(' + (y * k) + 'px)';
+    if (reduceMotion) return;
+    const y = Math.min(window.scrollY, 700);
+    document.querySelectorAll('.ridge__layer').forEach(layer => {
+        const depth = parseFloat(layer.dataset.depth || '0.1');
+        layer.style.setProperty('--px', (y * depth) + 'px');
     });
 }
 window.addEventListener('scroll', updateRidge, { passive: true });
