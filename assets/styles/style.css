@@ -76,19 +76,40 @@ html, body {
 @media (min-width: 768px) {
   .section { padding-block: 88px; }
 }
-/* ornamental strip between sections */
-.section::before {
+
+/* ── Ornamental divider between sections ── */
+.ornament {
+  position: relative;
+  height: 76px;
+  background: var(--navy-dark);
+  overflow: hidden;
+}
+.ornament::before,
+.ornament::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 12px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='12' viewBox='0 0 40 12'%3E%3Cg fill='none' stroke='%23f0c040' stroke-width='1.5' stroke-linejoin='round'%3E%3Cpath d='M4 6l4-4 4 4-4 4z'/%3E%3Cpath d='M20 2v8M28 2v8'/%3E%3Cpath d='M32 6l4-4 4 4-4 4z'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: center;
-  opacity: 0.4;
-  pointer-events: none;
+  top: 50%;
+  width: min(150px, 26vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(240, 192, 64, 0.5));
+}
+.ornament::before { right: calc(50% + 118px); }
+.ornament::after  { left: calc(50% + 118px); transform: scaleX(-1); }
+.ornament > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46px;
+  height: 210px;
+  transform: translate(-50%, -50%) rotate(90deg);
+  background: url(../media/ornament-divider.svg) no-repeat center / contain;
+  opacity: 0.8;
+}
+@media (min-width: 768px) {
+  .ornament { height: 92px; }
+  .ornament > i { width: 54px; height: 260px; }
+  .ornament::before { right: calc(50% + 150px); }
+  .ornament::after  { left: calc(50% + 150px); }
 }
 
 /* ── Scroll reveal (only when JS is available) ── */
