@@ -52,8 +52,17 @@ const i18n = {
     cd_hour:         "час",
     cd_min:          "мин",
     cd_sec:          "сек",
+    about_kicker:    "Echo of Nomads · 2026",
     about_title:     "О ФЕСТИВАЛЕ",
     about_text:      `Echo of Nomads станет одной из основных музыкальных площадок Всемирных игр кочевников. Фестиваль откроется 1 сентября на ипподроме в Чолпон-Ате. Помимо концертной программы, в его рамках пройдёт международный конкурс этнической песни.<br><br>В конкурсе заявлен 21 исполнитель из 20 стран. Участники представят национальные этнохиты и мировые композиции в современной интерпретации.`,
+    stat_artists:    "участник",
+    stat_countries:  "стран",
+    stat_days:       "дня фестиваля",
+    stat_categories: "категории",
+    winners_kicker:  "Национальный отбор",
+    sched_kicker:    "1–4 сентября · Ипподром",
+    members_kicker:  "Международный конкурс",
+    jury_kicker:     "Оценки",
     sched_title:     "Программа фестиваля",
     sched_sub:       "Ипподром, Чолпон-Ата · 1–4 сентября 2026",
     day1_date:       "1 сентября",
@@ -106,8 +115,17 @@ const i18n = {
     cd_hour:         "саат",
     cd_min:          "мүн",
     cd_sec:          "сек",
+    about_kicker:    "Echo of Nomads · 2026",
     about_title:     "ФЕСТИВАЛЬ ЖӨНҮНДӨ",
     about_text:      `Echo of Nomads Дүйнөлүк көчмөндөр оюндарынын негизги музыкалык аянтчаларынын бири болот. Фестиваль 1-сентябрда Чолпон-Ата шаарындагы ипподромдо ачылат. Концерттик программадан тышкары, анын алкагында этникалык ырдын эл аралык сынагы өткөрүлөт.<br><br>Сынакка 20 өлкөдөн 21 аткаруучу катышат. Катышуучулар улуттук этнохиттерди жана дүйнөлүк композицияларды заманбап интерпретацияда аткарышат.`,
+    stat_artists:    "катышуучу",
+    stat_countries:  "өлкө",
+    stat_days:       "фестиваль күнү",
+    stat_categories: "категория",
+    winners_kicker:  "Улуттук тандоо",
+    sched_kicker:    "1–4-сентябрь · Ипподром",
+    members_kicker:  "Эл аралык сынак",
+    jury_kicker:     "Баалар",
     sched_title:     "Фестивалдын программасы",
     sched_sub:       "Ипподром, Чолпон-Ата · 2026-жылдын 1–4-сентябры",
     day1_date:       "1-сентябрь",
@@ -159,8 +177,17 @@ const i18n = {
     cd_hour:         "hour",
     cd_min:          "min",
     cd_sec:          "sec",
+    about_kicker:    "Echo of Nomads · 2026",
     about_title:     "ABOUT THE FESTIVAL",
     about_text:      `Echo of Nomads will become one of the main music venues of the World Nomad Games. The festival opens on September 1 at the hippodrome in Cholpon-Ata. Alongside the concert programme, it hosts an international ethnic-song competition.<br><br>21 performers from 20 countries are entered in the competition. They will present national ethno-hits and world compositions in a modern interpretation.`,
+    stat_artists:    "artists",
+    stat_countries:  "countries",
+    stat_days:       "festival days",
+    stat_categories: "categories",
+    winners_kicker:  "National Selection",
+    sched_kicker:    "Sept 1–4 · Hippodrome",
+    members_kicker:  "International Competition",
+    jury_kicker:     "Scores",
     sched_title:     "Festival Programme",
     sched_sub:       "Hippodrome, Cholpon-Ata · September 1–4, 2026",
     day1_date:       "September 1",
@@ -251,29 +278,37 @@ function renderMembers() {
     (voteCounts[b.name] || 0) - (voteCounts[a.name] || 0)
   );
 
+  const maxVotes = Math.max(1, ...Object.values(voteCounts).map(Number));
+
   list.innerHTML = '';
   sorted.forEach((p, i) => {
     const votes  = voteCounts[p.name] || 0;
     const medals = ['🥇', '🥈', '🥉'];
-    const rank   = (i < 3 && votes > 0) ? medals[i] : `${i + 1}`;
+    const rankEl = (i < 3 && votes > 0)
+      ? `<div class="member-medal">${medals[i]}</div>`
+      : `<div class="member-rank">${i + 1}</div>`;
     const num    = (p.number != null && p.number !== '')
       ? `<span class="member-num">№${p.number}</span>` : '';
+    const pct    = Math.round((votes / maxVotes) * 100);
 
     const row = document.createElement('div');
     row.className = 'member-row';
     row.style.animationDelay = `${i * 0.05}s`;
     row.innerHTML = `
-      <div class="member-rank">${rank}</div>
+      ${rankEl}
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-info">
         <div class="member-name">${num}<img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
         <div class="member-country">${p.country || ''}</div>
         <div class="member-votes">${t.votes_label} <span>${votes}</span></div>
+        <div class="member-bar"><i style="--pct:${pct}%"></i></div>
       </div>
       <button class="member-vote-btn" onclick="openVoteModal('${p.name}')">${t.vote_btn}</button>
     `;
     list.appendChild(row);
   });
+
+  if (window.observeReveals) window.observeReveals();
 }
 
 // ── Жюри баллары ──

@@ -8,14 +8,18 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Эхо Кочевников</title>
+  <script>document.documentElement.className += ' js';</script>
   <link
       rel="icon"
       href="./assets/media/favicon.ico"
       type="image/x-icon"
     />
-  <link rel="stylesheet" href="./assets/styles/index.css?v=3">
-  <script src="./assets/script.js?v=3" defer></script>
-  <script type="module" src="./assets/voting.js?v=3" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="./assets/styles/index.css?v=4">
+  <script src="./assets/script.js?v=4" defer></script>
+  <script type="module" src="./assets/voting.js?v=4" defer></script>
 </head>
 <body>
 
@@ -63,15 +67,31 @@
         </div>
       </div>
 
-      <div class='air air1'></div><div class='air air2'></div><div class='air air3'></div><div class='air air4'></div>
+      <div class="ridge" aria-hidden="true" data-parallax="0.18">
+        <svg class="ridge__layer ridge__back" viewBox="0 0 1440 190" preserveAspectRatio="none">
+          <path d="M0,190 L0,118 C120,92 236,58 356,80 C470,101 540,150 660,138 C784,126 862,58 1000,66 C1140,74 1258,132 1440,98 L1440,190 Z"/>
+        </svg>
+        <svg class="ridge__layer ridge__front" viewBox="0 0 1440 210" preserveAspectRatio="none">
+          <path d="M0,210 L0,158 C92,158 156,104 256,118 C338,129 366,66 452,44 C536,23 578,128 700,128 C820,128 916,40 1036,46 C1176,53 1234,128 1342,116 C1400,110 1424,150 1440,150 L1440,210 Z"/>
+        </svg>
+      </div>
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section class="about">
-    <div class="container about__container">
-      <h2 class="title" data-i18n="about_title"></h2>
-      <p data-i18n="about_text"></p>
+  <section class="about section" id="about">
+    <div class="container container--wide about__container">
+      <div class="about__text reveal">
+        <span class="kicker" data-i18n="about_kicker"></span>
+        <h2 class="title title--lg" data-i18n="about_title"></h2>
+        <p data-i18n="about_text"></p>
+      </div>
+      <ul class="stats reveal">
+        <li class="stat"><span class="stat__num">21</span><span class="stat__label" data-i18n="stat_artists"></span></li>
+        <li class="stat"><span class="stat__num">20</span><span class="stat__label" data-i18n="stat_countries"></span></li>
+        <li class="stat"><span class="stat__num">4</span><span class="stat__label" data-i18n="stat_days"></span></li>
+        <li class="stat"><span class="stat__num">2</span><span class="stat__label" data-i18n="stat_categories"></span></li>
+      </ul>
     </div>
   </section>
 
@@ -80,11 +100,12 @@
     <div class="bg__animation">
       <div id="stars"></div><div id="stars2"></div><div id="stars3"></div><div id="stars4"></div>
     </div>
-    <div class="container winners__container">
-      <h2 class="title winners__title" data-i18n="winners_title"></h2>
+    <div class="container container--wide winners__container">
+      <span class="kicker kicker--center" data-i18n="winners_kicker"></span>
+      <h2 class="title title--lg winners__title" data-i18n="winners_title"></h2>
       <div class="winners__grid">
 
-        <div class="winner winner--audience">
+        <div class="winner winner--audience reveal">
           <div class="winner__photo-wrap">
             <span class="winner__halo"></span>
             <span class="winner__particles"></span>
@@ -95,7 +116,7 @@
           <div class="winner__award" data-i18n="winner_audience"></div>
         </div>
 
-        <div class="winner winner--jury">
+        <div class="winner winner--jury reveal">
           <div class="winner__photo-wrap">
             <span class="winner__halo"></span>
             <span class="winner__particles"></span>
@@ -111,37 +132,42 @@
   </section>
 
   <!-- FESTIVAL PROGRAMME -->
-  <section class="nation" id="nation">
-    <div class="container">
-      <h2 class="title" data-i18n="sched_title"></h2>
+  <section class="nation section" id="nation">
+    <div class="container container--wide">
+      <span class="kicker kicker--center" data-i18n="sched_kicker"></span>
+      <h2 class="title title--lg" data-i18n="sched_title"></h2>
       <p class="center" data-i18n="sched_sub"></p>
-      <div class="nation__box nation__box--grid">
+      <div class="nation__box nation__box--grid reveal">
         <div class="nation__box-items">
+          <span class="nation__wm">1</span>
           <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M16 6v52" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><path d="M16 10h32l-8 9 8 9H16z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/></svg>
           <div class="nation__date" data-i18n="day1_date"></div>
           <h4 data-i18n="day1_title"></h4>
           <p data-i18n="day1_desc"></p>
         </div>
         <div class="nation__box-items">
+          <span class="nation__wm">2</span>
           <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M26 46V16l24-6v30" stroke="#f0c040" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="19" cy="46" r="7" stroke="#f0c040" stroke-width="3"/><circle cx="43" cy="40" r="7" stroke="#f0c040" stroke-width="3"/></svg>
           <div class="nation__date" data-i18n="day2_date"></div>
           <h4 data-i18n="day2_title"></h4>
           <p data-i18n="day2_desc"></p>
         </div>
         <div class="nation__box-items">
+          <span class="nation__wm">3</span>
           <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="23" stroke="#f0c040" stroke-width="3"/><path d="M9 32h46M32 9c8 6 8 40 0 46M32 9c-8 6-8 40 0 46M13 19c11 7 27 7 38 0M13 45c11-7 27-7 38 0" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/></svg>
           <div class="nation__date" data-i18n="day3_date"></div>
           <h4 data-i18n="day3_title"></h4>
           <p data-i18n="day3_desc"></p>
         </div>
         <div class="nation__box-items">
+          <span class="nation__wm">4</span>
           <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M20 8h24v14a12 12 0 01-24 0V8z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/><path d="M20 12h-9a7 7 0 007 9M44 12h9a7 7 0 01-7 9" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><path d="M32 34v9M23 54h18l-3-9H26l-3 9z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/></svg>
           <div class="nation__date" data-i18n="day4_date"></div>
           <h4 data-i18n="day4_title"></h4>
           <p data-i18n="day4_desc"></p>
         </div>
       </div>
-      <div class="nation__note">
+      <div class="nation__note reveal">
         <svg width="44" height="44" viewBox="0 0 64 64" fill="none"><path d="M6 18h11c7 0 11 28 17 28h13M6 46h11c7 0 11-28 17-28h13" stroke="#f0c040" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M46 10l9 8-9 8M46 38l9 8-9 8" stroke="#f0c040" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <p data-i18n="draw_note"></p>
       </div>
@@ -149,22 +175,24 @@
   </section>
 
   <!-- MEMBERS -->
-  <section class="members" id="members">
-    <div class="container members__container">
-      <div class="bg-animation">
-        <div id="stars"></div><div id="stars2"></div><div id="stars3"></div><div id="stars4"></div>
-      </div>
-      <h2 class="title members__title" data-i18n="members_title"></h2>
-      <p class="center" data-i18n="vote_time"></p>
+  <section class="members section" id="members">
+    <div class="bg__animation">
+      <div id="stars"></div><div id="stars2"></div><div id="stars3"></div><div id="stars4"></div>
+    </div>
+    <div class="container container--wide members__container">
+      <span class="kicker kicker--center" data-i18n="members_kicker"></span>
+      <h2 class="title title--lg members__title" data-i18n="members_title"></h2>
+      <p class="center members__note" data-i18n="vote_time"></p>
       <div class="members__list" id="membersList">
         <div class="members__loading">Загрузка...</div>
       </div>
     </div>
   </section>
   <!-- JURY SCORES -->
-  <section class="jury-scores">
-    <div class="container members__container">
-      <h2 class="title members__title" data-i18n="jury_title"></h2>
+  <section class="jury-scores section">
+    <div class="container container--wide members__container">
+      <span class="kicker kicker--center" data-i18n="jury_kicker"></span>
+      <h2 class="title title--lg members__title" data-i18n="jury_title"></h2>
       <div id="juryScoresList"></div>
     </div>
   </section>

@@ -35,3 +35,40 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     }
     });
 });
+
+// ── Scroll reveal ──
+const revealObserver = ('IntersectionObserver' in window)
+    ? new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 })
+    : null;
+
+// exposed so voting.js can re-scan after it renders participant/jury rows
+window.observeReveals = function () {
+    const els = document.querySelectorAll('.reveal:not(.is-visible)');
+    if (!revealObserver) {
+        els.forEach(el => el.classList.add('is-visible'));
+        return;
+    }
+    els.forEach(el => revealObserver.observe(el));
+};
+
+// ── Ridge parallax (subtle, clipped inside the hero) ──
+function updateRidge() {
+    const y = Math.min(window.scrollY, 500);
+    document.querySelectorAll('.ridge').forEach(ridge => {
+        const k = parseFloat(ridge.dataset.parallax || '0.15');
+        ridge.style.transform = 'translateY(' + (y * k) + 'px)';
+    });
+}
+window.addEventListener('scroll', updateRidge, { passive: true });
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.observeReveals();
+    updateRidge();
+});
