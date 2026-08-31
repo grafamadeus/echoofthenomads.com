@@ -7,7 +7,14 @@ html, body {
   color: var(--white);
   -webkit-font-smoothing: antialiased;
   font-family: var(--main-font);
-  /* overflow-x: hidden; */
+}
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img {
+  max-width: 100%;
+  height: auto;
 }
 .container {
   max-width: 680px;
@@ -382,25 +389,30 @@ html.js .reveal.is-visible {
 }
 .hero__info-row {
   display: flex;
-  gap: 60px;
+  gap: 20px;
+  width: 100%;
 }
-.hero__info-item { flex: 1; }
+.hero__info-item { flex: 1; min-width: 0; }
 .info-item--right { text-align: right; }
 .hero__info-item .label {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 2.5px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--gold);
   margin-bottom: 4px;
 }
 .hero__info-item .value {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--white);
-  line-height: 1.2;
+  line-height: 1.25;
   text-transform: uppercase;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+}
+@media (min-width: 600px) {
+  .hero__info-row { gap: 60px; }
+  .hero__info-item .value { font-size: 18px; }
 }
 .hero__cta-wrap { margin: 20px 0; }
 .hero__cta-btn {
@@ -886,6 +898,79 @@ html.js .reveal.is-visible {
   font-weight: 700;
   color: var(--gold);
 }
+
+/* ═══════════════════════════════════════
+   JURY PANEL (the people)
+   ═══════════════════════════════════════ */
+.jurors {
+  background: var(--surface-1);
+}
+.jurors__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px 16px;
+  margin-top: 30px;
+}
+@media (min-width: 620px) {
+  .jurors__grid { grid-template-columns: repeat(3, 1fr); gap: 34px 20px; }
+}
+@media (min-width: 980px) {
+  .jurors__grid { grid-template-columns: repeat(5, 1fr); }
+}
+.juror {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+.juror__photo-wrap {
+  position: relative;
+  width: clamp(104px, 30vw, 132px);
+}
+.juror__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1a2540;
+  border: 2px solid rgba(240, 192, 64, 0.35);
+}
+.juror--chair .juror__photo {
+  border-color: var(--gold);
+  box-shadow: 0 0 26px rgba(240, 192, 64, 0.32);
+}
+.juror__name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #fff;
+  line-height: 1.25;
+}
+.juror__role {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+.juror--chair .juror__role { color: var(--gold-light); }
+.juror__country {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+.juror__flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
 /* ═══════════════════════════════════════
    VOTING MODAL
    ═══════════════════════════════════════ */
