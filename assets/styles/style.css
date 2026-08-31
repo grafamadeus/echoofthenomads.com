@@ -364,7 +364,157 @@ section .air.air4 { animation: wave2 5s linear infinite; z-index:997; opacity:0.
 .nation__box-items > svg { width: 70px; height: 60px; }
 .nation__box-items > h4 { text-transform: uppercase; font-weight: 700; text-align: center; }
 .nation__box-items > p  { text-transform: capitalize; font-weight: 400; text-align: center; font-size: 15px; }
- 
+
+/* Festival programme grid — 2 x 2 */
+.nation__box--grid {
+  grid-template-rows: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.nation__box--grid .nation__box-items {
+  row-gap: 10px;
+  padding: 24px 20px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.nation__box--grid .nation__box-items > p { text-transform: none; }
+@media (max-width: 560px) {
+  .nation__box--grid { grid-template-columns: 1fr; }
+}
+.nation__date {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: #c9a227;
+  text-align: center;
+}
+.nation__note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 16px 20px;
+  border: 1px solid rgba(240,192,64,0.5);
+  border-radius: 14px;
+  background: rgba(240,192,64,0.09);
+}
+.nation__note svg { flex-shrink: 0; }
+.nation__note p { margin: 0; font-size: 14px; font-weight: 500; text-align: left; }
+
+/* ═══════════════════════════════════════
+   NATIONAL SELECTION WINNERS
+   ═══════════════════════════════════════ */
+.winners {
+  position: relative;
+  overflow: hidden;
+  /* background: linear-gradient(180deg, #ffffff 10%,  #1e2d5e 70%); */
+}
+.winners .bg__animation { z-index: 0; }
+.winners__container {
+  position: relative;
+  z-index: 2;
+  padding: 40px 20px 48px;
+  text-align: center;
+}
+.winners__title {
+  color: var(--gold);
+  margin-bottom: 36px;
+  padding-top: 24px;
+}
+.winners__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 44px 56px;
+}
+.winner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 220px;
+}
+.winner--audience { --w-color: #f0c040; --w-glow: rgba(240,192,64,0.55); }
+.winner--jury     { --w-color: #4db8ff; --w-glow: rgba(77,184,255,0.50); }
+
+.winner__photo-wrap {
+  position: relative;
+  width: 176px;
+  height: 176px;
+  display: grid;
+  place-items: center;
+}
+/* rotating light halo */
+.winner__halo {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--w-color) 82%, transparent 100%);
+  filter: blur(9px);
+  opacity: 0.6;
+  animation: winnerSpin 6s linear infinite;
+}
+/* orbiting particles — one dot casting many offset shadows, rotated as a group */
+.winner__particles {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--w-color);
+  box-shadow:
+     0   -112px 0  0   var(--w-color),
+     97px -58px  0 -1px var(--w-color),
+     110px  22px 0 -1px var(--w-color),
+     55px   99px 0  0   var(--w-color),
+    -46px  104px 0 -2px var(--w-color),
+    -108px  30px 0 -1px var(--w-color),
+    -88px  -74px 0 -1px var(--w-color),
+     18px  -96px 0 -2px var(--w-color);
+  animation: winnerSpin 17s linear infinite;
+}
+.winner__photo {
+  position: relative;
+  z-index: 1;
+  width: 152px;
+  height: 152px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--w-color);
+  background: #1a2540;
+  animation: winnerPulse 3.2s ease-in-out infinite;
+}
+@keyframes winnerSpin { to { transform: rotate(360deg); } }
+@keyframes winnerPulse {
+  0%, 100% { box-shadow: 0 0 0 6px rgba(255,255,255,0.04), 0 0 22px 2px var(--w-glow); }
+  50%      { box-shadow: 0 0 0 6px rgba(255,255,255,0.04), 0 0 44px 12px var(--w-glow); }
+}
+.winner__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+.winner__award {
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--w-color);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  max-width: 200px;
+}
+@media (min-width: 600px) {
+  .winner__photo-wrap { width: 208px; height: 208px; }
+  .winner__photo { width: 180px; height: 180px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .winner__halo,
+  .winner__particles,
+  .winner__photo { animation: none; }
+}
+
 /* ═══════════════════════════════════════
    MEMBERS LIST
    ═══════════════════════════════════════ */
@@ -434,6 +584,27 @@ section .air.air4 { animation: wave2 5s linear infinite; z-index:997; opacity:0.
 }
 .member-votes { font-size: 0.75rem; color: #aaa; }
 .member-votes span { color: #f0c040; font-weight: 700; }
+.member-flag {
+  width: 26px;
+  height: 18px;
+  margin-right: 7px;
+  border-radius: 3px;
+  object-fit: cover;
+  vertical-align: -3px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.18);
+}
+.member-country { font-size: 0.75rem; color: #aaa; margin-bottom: 4px; }
+.member-num {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(240,192,64,0.18);
+  color: #f0c040;
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
 .member-vote-btn {
   flex-shrink: 1;
   padding: 8px 14px;

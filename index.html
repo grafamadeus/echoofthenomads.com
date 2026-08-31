@@ -75,27 +75,75 @@
     </div>
   </section>
 
-  <!-- NATION -->
+  <!-- NATIONAL SELECTION WINNERS -->
+  <section class="winners" id="winners">
+    <div class="bg__animation">
+      <div id="stars"></div><div id="stars2"></div><div id="stars3"></div><div id="stars4"></div>
+    </div>
+    <div class="container winners__container">
+      <h2 class="title winners__title" data-i18n="winners_title"></h2>
+      <div class="winners__grid">
+
+        <div class="winner winner--audience">
+          <div class="winner__photo-wrap">
+            <span class="winner__halo"></span>
+            <span class="winner__particles"></span>
+            <img class="winner__photo" src="./assets/media/members/ДОКУ.webp" alt="Деркембаев Нурдөөлөт"
+                 onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E'">
+          </div>
+          <div class="winner__name">Деркембаев Нурдөөлөт</div>
+          <div class="winner__award" data-i18n="winner_audience"></div>
+        </div>
+
+        <div class="winner winner--jury">
+          <div class="winner__photo-wrap">
+            <span class="winner__halo"></span>
+            <span class="winner__particles"></span>
+            <img class="winner__photo" src="./assets/media/members/Старбеков Рыскелди.webp" alt="Старбеков Рыскелди"
+                 onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%234db8ff%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%234db8ff%22/%3E%3C/svg%3E'">
+          </div>
+          <div class="winner__name">Старбеков Рыскелди</div>
+          <div class="winner__award" data-i18n="winner_jury"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FESTIVAL PROGRAMME -->
   <section class="nation" id="nation">
     <div class="container">
-      <h2 class="title" data-i18n="nation_title"></h2>
-      <p class="center" data-i18n="nation_sub"></p>
-      <div class="nation__box">
-        <div class="nation__box-items first">
-          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><rect x="12" y="8" width="40" height="48" rx="6" stroke="#f0c040" stroke-width="3"/><path d="M22 20h20M22 28h20M22 36h12" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><circle cx="44" cy="48" r="8" fill="#1a3a8f" stroke="#f0c040" stroke-width="2"/><path d="M41 48l2 2 4-4" stroke="#f0c040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h4 data-i18n="stage1_title"></h4>
-          <p data-i18n="stage1_desc"></p>
+      <h2 class="title" data-i18n="sched_title"></h2>
+      <p class="center" data-i18n="sched_sub"></p>
+      <div class="nation__box nation__box--grid">
+        <div class="nation__box-items">
+          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M16 6v52" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><path d="M16 10h32l-8 9 8 9H16z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/></svg>
+          <div class="nation__date" data-i18n="day1_date"></div>
+          <h4 data-i18n="day1_title"></h4>
+          <p data-i18n="day1_desc"></p>
         </div>
         <div class="nation__box-items">
-          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><rect x="6" y="16" width="36" height="28" rx="5" stroke="#f0c040" stroke-width="3"/><path d="M42 24l14-8v28l-14-8V24z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/><circle cx="24" cy="30" r="6" stroke="#f0c040" stroke-width="2"/><path d="M22 30l5-3v6l-5-3z" fill="#f0c040"/></svg>
-          <h4 data-i18n="stage2_title"></h4>
-          <p data-i18n="stage2_desc"></p>
+          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M26 46V16l24-6v30" stroke="#f0c040" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="19" cy="46" r="7" stroke="#f0c040" stroke-width="3"/><circle cx="43" cy="40" r="7" stroke="#f0c040" stroke-width="3"/></svg>
+          <div class="nation__date" data-i18n="day2_date"></div>
+          <h4 data-i18n="day2_title"></h4>
+          <p data-i18n="day2_desc"></p>
         </div>
-        <div class="nation__box-items third">
-          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M20 8h24v20a12 12 0 01-24 0V8z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/><path d="M20 16H10a6 6 0 006 6h4M44 16h10a6 6 0 01-6 6h-4" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><path d="M32 40v10M22 50h20" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/></svg>
-          <h4 data-i18n="stage3_title"></h4>
-          <p data-i18n="stage3_desc"></p>
+        <div class="nation__box-items">
+          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="23" stroke="#f0c040" stroke-width="3"/><path d="M9 32h46M32 9c8 6 8 40 0 46M32 9c-8 6-8 40 0 46M13 19c11 7 27 7 38 0M13 45c11-7 27-7 38 0" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/></svg>
+          <div class="nation__date" data-i18n="day3_date"></div>
+          <h4 data-i18n="day3_title"></h4>
+          <p data-i18n="day3_desc"></p>
         </div>
+        <div class="nation__box-items">
+          <svg width="60" height="60" viewBox="0 0 64 64" fill="none"><path d="M20 8h24v14a12 12 0 01-24 0V8z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/><path d="M20 12h-9a7 7 0 007 9M44 12h9a7 7 0 01-7 9" stroke="#f0c040" stroke-width="3" stroke-linecap="round"/><path d="M32 34v9M23 54h18l-3-9H26l-3 9z" stroke="#f0c040" stroke-width="3" stroke-linejoin="round"/></svg>
+          <div class="nation__date" data-i18n="day4_date"></div>
+          <h4 data-i18n="day4_title"></h4>
+          <p data-i18n="day4_desc"></p>
+        </div>
+      </div>
+      <div class="nation__note">
+        <svg width="44" height="44" viewBox="0 0 64 64" fill="none"><path d="M6 18h11c7 0 11 28 17 28h13M6 46h11c7 0 11-28 17-28h13" stroke="#f0c040" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M46 10l9 8-9 8M46 38l9 8-9 8" stroke="#f0c040" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <p data-i18n="draw_note"></p>
       </div>
     </div>
   </section>
