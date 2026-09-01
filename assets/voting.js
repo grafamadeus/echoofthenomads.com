@@ -20,7 +20,7 @@ const PARTICIPANTS = [
   { name: "Benjamin Hasanić",                     country: "Босния и Герцеговина",  code: "ba", number: null, photo: "./assets/media/members/hasanic.webp" },
   { name: "Dany Leal",          country: "Испания",              code: "es", number: null, photo: "./assets/media/members/leal.webp" },
   { name: "Thami Mbatha", country: "Южная Африка",          code: "za", number: null, photo: "./assets/media/members/thami.webp" },
-  { name: "Odmandakh Bayaraa",                    country: "Монголия",             code: "mn", number: null, photo: "./assets/media/members/odmandakh.webp" },
+  { name: "Odmandakh Bayaraa",                    country: "Монголия",             code: "mn", number: null, photo: "./assets/media/members/odmandakh.jpeg" },
   { name: "Ngo Chau Anh",                         country: "Вьетнам",              code: "vn", number: null, photo: "./assets/media/members/ngo chau.webp" },
   { name: "Tleumbetova Zhasmin",                  country: "Казахстан",            code: "kz", number: null, photo: "./assets/media/members/zhasmin.webp" },
   { name: "Zhumakanov Danial",                    country: "Россия",               code: "ru", number: null, photo: "./assets/media/members/danial.webp" },
