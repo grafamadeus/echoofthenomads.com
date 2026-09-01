@@ -1,0 +1,25 @@
+{
+  "name": "echo-vote-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Echo of Nomads — self-hosted voting API (replaces Firebase)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "node scripts/migrate.mjs",
+    "seed": "node scripts/seed.mjs"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@fastify/rate-limit": "^10.1.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.1.0",
+    "google-auth-library": "^9.15.0",
+    "ioredis": "^5.4.1",
+    "pg": "^8.13.1"
+  }
+}

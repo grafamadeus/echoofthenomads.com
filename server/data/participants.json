@@ -1,0 +1,22 @@
+[
+  { "id": 1,  "slug": "elif",          "name": "Avcı Dişbudak Elif",   "country": "Турция",                 "country_code": "tr" },
+  { "id": 2,  "slug": "batista",       "name": "Annys Batista",        "country": "Куба",                   "country_code": "cu" },
+  { "id": 3,  "slug": "villegas",      "name": "Rodrigo Villegas",     "country": "Мексика",                "country_code": "mx" },
+  { "id": 4,  "slug": "roger-ricco",   "name": "Roger Ricco",          "country": "Бразилия",               "country_code": "br" },
+  { "id": 5,  "slug": "angelov-vasil", "name": "Vasil Angelov",        "country": "Македония",              "country_code": "mk" },
+  { "id": 6,  "slug": "lva",           "name": "LVA",                  "country": "Болгария",               "country_code": "bg" },
+  { "id": 7,  "slug": "vika",          "name": "Vika Adamyan",         "country": "Армения",                "country_code": "am" },
+  { "id": 8,  "slug": "hodaya",        "name": "Hodaya",               "country": "США",                    "country_code": "us" },
+  { "id": 9,  "slug": "buga",          "name": "Elena Buga",           "country": "Молдова",                "country_code": "md" },
+  { "id": 10, "slug": "naumenko",      "name": "Tina Notte",           "country": "Латвия",                 "country_code": "lv" },
+  { "id": 11, "slug": "hasanic",       "name": "Benjamin Hasanić",     "country": "Босния и Герцеговина",   "country_code": "ba" },
+  { "id": 12, "slug": "leal",          "name": "Dany Leal",            "country": "Испания",                "country_code": "es" },
+  { "id": 13, "slug": "thami",         "name": "Thami Mbatha",         "country": "Южная Африка",           "country_code": "za" },
+  { "id": 14, "slug": "odmandakh",     "name": "Odmandakh Bayaraa",    "country": "Монголия",               "country_code": "mn" },
+  { "id": 15, "slug": "ngo-chau",      "name": "Ngo Chau Anh",         "country": "Вьетнам",                "country_code": "vn" },
+  { "id": 16, "slug": "zhasmin",       "name": "Tleumbetova Zhasmin",  "country": "Казахстан",              "country_code": "kz" },
+  { "id": 17, "slug": "danial",        "name": "Zhumakanov Danial",    "country": "Россия",                 "country_code": "ru" },
+  { "id": 18, "slug": "lee",           "name": "Listen",               "country": "Южная Корея",            "country_code": "kr" },
+  { "id": 19, "slug": "derkembaev",    "name": "Деркембаев Нурдөөлөт", "country": "Кыргызстан",             "country_code": "kg" },
+  { "id": 20, "slug": "starbekov",     "name": "Старбеков Рыскелди",   "country": "Кыргызстан",             "country_code": "kg" }
+]
