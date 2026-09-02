@@ -893,10 +893,16 @@ html.js .reveal.is-visible {
 }
 .jury-score-val {
   margin-left: auto;
+  flex-shrink: 0;
   font-family: var(--display-font);
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--gold);
+}
+.jury-breakdown {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 /* ═══════════════════════════════════════

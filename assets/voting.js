@@ -300,7 +300,10 @@ async function fetchResults() {
     for (const p of data.participants || []) {
       live.counts[p.slug] = p.votes || 0;
       const local = bySlug(p.slug);
-      if (local && p.number != null) local.number = p.number;
+      if (local) {
+        local.id = p.id;
+        if (p.number != null) local.number = p.number;
+      }
     }
     live.ready = true;
 
@@ -379,19 +382,48 @@ function renderMembers() {
   if (window.observeReveals) window.observeReveals();
 }
 
-// ── Баллы жюри (пока статично — фаза 2) ──
-const juryTotals = {};
-function renderJuryScores(totals) {
+// ── Баллы жюри: сумма обеих категорий (этно-хит + мировой хит) ──
+let juryTotals = {}; // slug -> { ethno, world, sum }
+
+async function fetchJuryResults() {
+  if (document.hidden) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/jury/results`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const d = await res.json();
+    const e = (d.totals && d.totals.ethno) || {};
+    const w = (d.totals && d.totals.world) || {};
+    const next = {};
+    PARTICIPANTS.forEach(p => {
+      if (p.id == null) return;
+      const et = (e[p.id] && e[p.id].total) || 0;
+      const wt = (w[p.id] && w[p.id].total) || 0;
+      next[p.slug] = { ethno: et, world: wt, sum: et + wt };
+    });
+    juryTotals = next;
+    renderJuryScores();
+  } catch { /* keep last-known */ }
+}
+
+function renderJuryScores() {
   const list = document.getElementById('juryScoresList');
   if (!list) return;
+
+  const rows = PARTICIPANTS.map(p => ({ p, s: juryTotals[p.slug] || { ethno: 0, world: 0, sum: 0 } }));
+  const anyScores = rows.some(r => r.s.sum > 0);
+  if (anyScores) rows.sort((a, b) => b.s.sum - a.s.sum);
+
   list.innerHTML = '';
-  PARTICIPANTS.forEach(p => {
+  rows.forEach(({ p, s }) => {
     const row = document.createElement('div');
     row.className = 'jury-score-row';
     row.innerHTML = `
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
-      <div class="member-name"><img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
-      <div class="jury-score-val">${totals[p.slug] || 0}</div>
+      <div class="member-info">
+        <div class="member-name"><img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
+        <div class="jury-breakdown">этно ${s.ethno} · мир ${s.world}</div>
+      </div>
+      <div class="jury-score-val">${s.sum}</div>
     `;
     list.appendChild(row);
   });
@@ -524,8 +556,9 @@ window.signInWithGoogle = () => {};
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
   setLang('ky');
-  renderJuryScores(juryTotals);
-  fetchResults();
+  renderJuryScores();
+  fetchResults().then(fetchJuryResults);   // /api/results first — it fills participant ids
   setInterval(fetchResults, POLL_MS);
+  setInterval(fetchJuryResults, POLL_MS);
   initGsi();
 });
