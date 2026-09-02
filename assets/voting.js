@@ -342,10 +342,10 @@ function renderMembers() {
     const votesLine = live.ready
       ? `${t.votes_label} <span>${p.votes}</span>`
       : `<span style="opacity:.55">…</span>`;
+    // localStorage is only a hint — the server is authoritative, so the button
+    // stays active (lets testers re-vote after an admin reset).
     const voted = myVote && myVote === p.slug;
-    const btn = voted
-      ? `<button class="member-vote-btn" disabled style="opacity:.55">✓</button>`
-      : `<button class="member-vote-btn" data-slug="${p.slug}">${t.vote_btn}</button>`;
+    const btn = `<button class="member-vote-btn" data-slug="${p.slug}"${voted ? ' style="opacity:.7"' : ''}>${voted ? '✓ ' + t.vote_btn : t.vote_btn}</button>`;
 
     const row = document.createElement('div');
     row.className = 'member-row';
@@ -498,15 +498,10 @@ window.openVoteModal = (slug) => {
     return;
   }
 
+  // Always go through sign-in — the server decides if this identity has
+  // already voted (returns 409 with the real prior choice). Not gating on
+  // localStorage means an admin reset lets people vote again cleanly.
   openModal();
-
-  if (myVote) {
-    currentSlug = myVote;
-    document.getElementById('alreadyName').textContent = nameOf(myVote);
-    showStep('modal-already');
-    return;
-  }
-
   currentSlug = slug;
   document.getElementById('candidateName').textContent = nameOf(slug);
   const errEl = document.getElementById('loginError');

@@ -81,6 +81,27 @@ export default async function adminRoutes(fastify) {
     return { ok: true };
   });
 
+  // DESTRUCTIVE: wipe every public vote (e.g. clear a test run before go-live).
+  // Requires body {"confirm":"reset"} on top of the bearer token.
+  fastify.post('/api/admin/reset', {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['confirm'],
+        additionalProperties: false,
+        properties: { confirm: { type: 'string' } },
+      },
+    },
+  }, async (req, reply) => {
+    if (req.body.confirm !== 'reset') {
+      return reply.code(400).send({ error: 'confirm must be "reset"' });
+    }
+    const before = (await q(`SELECT count(*)::int AS n FROM vote`)).rows[0].n;
+    await q(`TRUNCATE vote RESTART IDENTITY`);
+    await reconcileCountsFromDb();   // clears the Redis hash + in-memory snapshot
+    return { ok: true, deleted: before };
+  });
+
   // Raw votes as CSV (audit / recount).
   fastify.get('/api/admin/export', async (_req, reply) => {
     const { rows } = await q(
