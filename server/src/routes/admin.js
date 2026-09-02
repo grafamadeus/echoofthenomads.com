@@ -81,6 +81,78 @@ export default async function adminRoutes(fastify) {
     return { ok: true };
   });
 
+  // ── Jury management ──
+  fastify.get('/api/admin/jurors', async () =>
+    (await q(`SELECT id, email, display_name, role, active FROM juror ORDER BY id`)).rows
+  );
+
+  fastify.post('/api/admin/juror', {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['email', 'display_name'],
+        additionalProperties: false,
+        properties: {
+          email: { type: 'string', minLength: 3, maxLength: 200 },
+          display_name: { type: 'string', minLength: 1, maxLength: 120 },
+          role: { type: 'string', enum: ['chair', 'member'] },
+          active: { type: 'boolean' },
+        },
+      },
+    },
+  }, async (req) => {
+    const { email, display_name, role = 'member', active = true } = req.body;
+    const r = await q(
+      `INSERT INTO juror (email, display_name, role, active)
+       VALUES (lower($1), $2, $3, $4)
+       ON CONFLICT (email) DO UPDATE SET
+         display_name = EXCLUDED.display_name,
+         role = EXCLUDED.role,
+         active = EXCLUDED.active
+       RETURNING id, email, display_name, role, active`,
+      [email, display_name, role, active]
+    );
+    return { ok: true, juror: r.rows[0] };
+  });
+
+  // Flip the active jury category / open-closed.
+  fastify.post('/api/admin/jury', {
+    schema: {
+      body: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          open: { type: 'boolean' },
+          category: { type: 'string', enum: ['ethno', 'world'] },
+        },
+      },
+    },
+  }, async (req) => {
+    const cur = (await q(`SELECT value FROM app_setting WHERE key='jury'`)).rows[0]?.value || {};
+    const next = { open: true, category: 'ethno', ...cur, ...req.body };
+    await q(
+      `INSERT INTO app_setting (key, value, updated_at) VALUES ('jury', $1, now())
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+      [JSON.stringify(next)]
+    );
+    return { ok: true, jury: next };
+  });
+
+  // Wipe jury scores (test cleanup).
+  fastify.post('/api/admin/jury/reset', {
+    schema: {
+      body: {
+        type: 'object', required: ['confirm'], additionalProperties: false,
+        properties: { confirm: { type: 'string' } },
+      },
+    },
+  }, async (req, reply) => {
+    if (req.body.confirm !== 'reset') return reply.code(400).send({ error: 'confirm must be "reset"' });
+    const before = (await q(`SELECT count(*)::int AS n FROM jury_score`)).rows[0].n;
+    await q(`TRUNCATE jury_score`);
+    return { ok: true, deleted: before };
+  });
+
   // DESTRUCTIVE: wipe every public vote (e.g. clear a test run before go-live).
   // Requires body {"confirm":"reset"} on top of the bearer token.
   fastify.post('/api/admin/reset', {

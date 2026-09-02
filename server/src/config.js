@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { createHash } from 'node:crypto';
 
 function required(name) {
   const v = process.env[name];
@@ -19,6 +20,11 @@ export const config = {
   votePepper: required('VOTE_PEPPER'),
   googleClientId: required('GOOGLE_CLIENT_ID'),
   adminToken: required('ADMIN_TOKEN'),
+
+  // Signs jury session tokens. Defaults to a value derived from the pepper,
+  // so no env change is needed on existing deployments.
+  juryJwtSecret: process.env.JURY_JWT_SECRET
+    || createHash('sha256').update('jury:' + required('VOTE_PEPPER')).digest('hex'),
 
   allowedOrigins: (process.env.ALLOWED_ORIGINS || '')
     .split(',').map(s => s.trim()).filter(Boolean),

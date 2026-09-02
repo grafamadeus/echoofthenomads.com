@@ -4,6 +4,7 @@ import rateLimit from '@fastify/rate-limit';
 import { config } from './config.js';
 import { redis } from './redis.js';
 import publicRoutes from './routes/public.js';
+import juryRoutes from './routes/jury.js';
 import adminRoutes from './routes/admin.js';
 
 export function buildApp() {
@@ -33,6 +34,7 @@ export function buildApp() {
   app.get('/health', async () => ({ ok: true, ts: Date.now() }));
 
   app.register(publicRoutes);
+  app.register(juryRoutes);
   app.register(adminRoutes);
 
   return app;
