@@ -303,6 +303,14 @@ async function fetchResults() {
       if (local && p.number != null) local.number = p.number;
     }
     live.ready = true;
+
+    // Server has zero votes on record (e.g. after an admin reset) → drop the
+    // stale local "I voted" hint so the ✓ clears itself for everyone.
+    if (live.total === 0 && myVote) {
+      myVote = null;
+      try { localStorage.removeItem('echo_vote'); } catch { /* ignore */ }
+    }
+
     renderMembers();
   } catch { /* keep last-known snapshot; UI stays up */ }
 }
