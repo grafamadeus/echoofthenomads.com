@@ -79,6 +79,9 @@ export default async function juryRoutes(fastify) {
   }, async (req, reply) => {
     const s = await getJurySetting();
     if (s.open === false) return reply.code(403).send({ error: 'jury_closed' });
+    if (req.body.category !== s.category) {
+      return reply.code(403).send({ error: 'wrong_category', active: s.category });
+    }
     await q(
       `INSERT INTO jury_score (juror_id, participant_id, category, score)
        VALUES ($1, $2, $3, $4)

@@ -38,11 +38,14 @@
     .tabs{display:flex;gap:8px}
     .tab{padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:.8rem;font-weight:600;color:var(--muted)}
     .tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+    .tab.locked{opacity:.45}
     .tab .now{display:inline-block;width:6px;height:6px;border-radius:50%;background:#51cf66;margin-left:6px;vertical-align:middle}
+    .tab .lk{margin-left:6px;opacity:.7}
 
     .wrap{max-width:760px;margin:0 auto;padding:20px 14px 60px}
     .hint{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:18px}
     .closed{text-align:center;color:#ffb84d;font-size:.85rem;margin-bottom:16px}
+    .catnote{text-align:center;color:#ffb84d;font-size:.82rem;margin-bottom:16px}
 
     .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
     .card__top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
@@ -55,6 +58,7 @@
     .card__total b{display:block;font-size:1.3rem;font-weight:800;color:var(--gold);line-height:1}
     .card__total span{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
     .scores{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+    .scores.locked{opacity:.3;pointer-events:none;filter:grayscale(1)}
     .sbtn{padding:16px 0;background:rgba(255,255,255,.05);border:1px solid rgba(240,192,64,.2);
       border-radius:8px;color:var(--muted);font-size:.9rem;font-weight:700;transition:.12s}
     .sbtn:hover{background:rgba(240,192,64,.14);color:var(--gold)}
@@ -97,6 +101,7 @@
     <div class="wrap">
       <div class="hint">Нажмите оценку 1–10 — сохраняется сразу. Можно менять до закрытия.</div>
       <div class="closed" id="closedBanner" style="display:none">Оценивание закрыто администратором</div>
+      <div class="catnote" id="catNote" style="display:none"></div>
       <div id="grid"></div>
     </div>
   </div>
@@ -126,6 +131,7 @@
   let totals = { ethno:{}, world:{} };
   let panel = { open:true, category:'ethno' };
   let viewCat = 'ethno';
+  let prevActive = null;   // last known panel.category, to auto-follow admin switches
   let gsiReady = false;
 
   const H = () => ({ 'Authorization':'Bearer '+token, 'Content-Type':'application/json' });
@@ -189,8 +195,18 @@
     await refreshState();
     await refreshTotals();
     viewCat = panel.category;
+    prevActive = panel.category;
     renderTabs();
     renderGrid();
+  }
+  // When the admin flips the active category, a juror sitting on the (now old)
+  // active tab is moved to the new one. Someone just viewing the other tab stays.
+  function syncActiveCat() {
+    if (panel.category !== prevActive) {
+      if (viewCat === prevActive) { viewCat = panel.category; renderGrid(); }
+      prevActive = panel.category;
+    }
+    renderTabs();
   }
   async function refreshState() {
     const r = await fetch(API + '/api/jury/state', { headers: H(), cache:'no-store' });
@@ -207,7 +223,7 @@
       panel.open = d.open; panel.category = d.category;
     } catch { return; }
     document.getElementById('closedBanner').style.display = panel.open ? 'none' : 'block';
-    renderTabs();
+    syncActiveCat();
     participants.forEach(p => {
       const b = document.querySelector(`#tot-${p.id} b`);
       if (b) b.textContent = totals[viewCat][p.id]?.total ?? 0;
@@ -215,6 +231,7 @@
   }
   async function setScore(pid, score) {
     if (!panel.open) { alert('Оценивание закрыто администратором.'); return; }
+    if (viewCat !== panel.category) { alert('Сейчас оценивается другая категория: ' + CAT_LABEL[panel.category] + '.'); return; }
     myScores[viewCat][pid] = score;
     paintCard(pid);
     const saved = document.querySelector(`#saved-${pid}`);
@@ -224,6 +241,12 @@
         body: JSON.stringify({ participantId: pid, category: viewCat, score }),
       });
       if (r.status === 401) return logout();
+      if (r.status === 403) {
+        // admin changed state mid-tap — resync and stop
+        await refreshState(); syncActiveCat(); renderGrid();
+        if (saved) { saved.textContent = 'категория закрыта'; saved.style.color = '#ffb84d'; }
+        return;
+      }
       if (!r.ok) { if (saved){saved.textContent='не сохранилось'; saved.style.color='#ff6b6b';} return; }
       if (saved) { saved.textContent = 'сохранено ✓'; saved.style.color = '#51cf66'; }
       refreshTotals();
@@ -235,9 +258,11 @@
   // ── render ──
   function renderTabs() {
     const el = document.getElementById('catTabs');
-    el.innerHTML = ['ethno','world'].map(c =>
-      `<button class="tab${c===viewCat?' active':''}" data-cat="${c}">${CAT_LABEL[c]}${c===panel.category?'<span class="now" title="сейчас оценивается"></span>':''}</button>`
-    ).join('');
+    el.innerHTML = ['ethno','world'].map(c => {
+      const isActive = c === panel.category;
+      const mark = isActive ? '<span class="now" title="сейчас оценивается"></span>' : '<span class="lk">🔒</span>';
+      return `<button class="tab${c===viewCat?' active':''}${isActive?'':' locked'}" data-cat="${c}">${CAT_LABEL[c]}${mark}</button>`;
+    }).join('');
     el.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
       viewCat = b.dataset.cat; renderTabs(); renderGrid();
     }));
@@ -249,6 +274,15 @@
     wrap.querySelectorAll('.sbtn').forEach((btn,i) => btn.classList.toggle('on', i+1 === mine));
   }
   function renderGrid() {
+    const locked = viewCat !== panel.category;
+    const note = document.getElementById('catNote');
+    if (locked) {
+      note.textContent = `Сейчас оценивается «${CAT_LABEL[panel.category]}». Категория «${CAT_LABEL[viewCat]}» закрыта — только просмотр.`;
+      note.style.display = 'block';
+    } else {
+      note.style.display = 'none';
+    }
+
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
     participants.forEach(p => {
@@ -265,14 +299,16 @@
           </div>
           <div class="card__total" id="tot-${p.id}"><b>${tot}</b><span>сумма</span></div>
         </div>
-        <div class="scores" id="sc-${p.id}">
+        <div class="scores${locked ? ' locked' : ''}" id="sc-${p.id}">
           ${Array.from({length:10},(_,i)=>`<button class="sbtn${i+1===mine?' on':''}" data-s="${i+1}">${i+1}</button>`).join('')}
         </div>
         <div class="saved" id="saved-${p.id}"></div>
       `;
-      card.querySelectorAll('.sbtn').forEach(btn =>
-        btn.addEventListener('click', () => setScore(p.id, Number(btn.dataset.s)))
-      );
+      if (!locked) {
+        card.querySelectorAll('.sbtn').forEach(btn =>
+          btn.addEventListener('click', () => setScore(p.id, Number(btn.dataset.s)))
+        );
+      }
       grid.appendChild(card);
     });
   }
@@ -287,7 +323,7 @@
       show('loginScreen');
     }
     setInterval(() => { if (token) refreshTotals(); }, 4000);
-    setInterval(() => { if (token) refreshState().then(renderTabs); }, 15000);
+    setInterval(() => { if (token) refreshState().then(syncActiveCat); }, 15000);
   });
   </script>
 </body>
