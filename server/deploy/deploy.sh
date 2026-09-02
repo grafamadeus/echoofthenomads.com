@@ -4,6 +4,7 @@ set -euo pipefail
 
 REPO_DIR=/srv/echo-vote
 BRANCH="${1:-thrd-stage}"
+ENV_FILE=/etc/echo-vote/env
 
 cd "$REPO_DIR"
 echo "==> git fetch/reset origin/$BRANCH"
@@ -15,8 +16,8 @@ echo "==> npm ci"
 npm ci --omit=dev
 
 echo "==> migrate + seed"
-node scripts/migrate.mjs
-node scripts/seed.mjs
+node --env-file="$ENV_FILE" scripts/migrate.mjs
+node --env-file="$ENV_FILE" scripts/seed.mjs
 
 echo "==> restart service"
 sudo systemctl restart echo-vote
