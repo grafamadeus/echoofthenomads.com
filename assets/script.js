@@ -26,13 +26,16 @@ setInterval(tick, 1000);
 
 document.querySelectorAll('a[href^="#"]').forEach(link => {
     link.addEventListener('click', function(e) {
+    const hash = this.getAttribute('href');
+    if (hash.length < 2) return;
+    const target = document.querySelector(hash);
+    if (!target) return;
     e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
-        target.scrollIntoView({
-        behavior: 'smooth'
-        });
-    }
+    // computed offset + window.scrollTo — reliable on mobile where
+    // scrollIntoView can no-op depending on the scroll container
+    const y = target.getBoundingClientRect().top + window.pageYOffset - 8;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+    history.replaceState(null, '', hash);
     });
 });
 
