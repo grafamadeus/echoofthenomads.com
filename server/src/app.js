@@ -18,7 +18,8 @@ export function buildApp() {
 
   app.register(cors, {
     origin: config.allowedOrigins.length ? config.allowedOrigins : false,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     maxAge: 86400,
   });
 
