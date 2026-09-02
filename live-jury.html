@@ -111,11 +111,10 @@
       ]);
       (pr.participants || []).forEach(p => meta[p.id] = p);
 
-      // audience-vote winner — barred from also winning the jury award.
-      // Only applies once public voting has CLOSED (before that there is no winner yet).
+      // current audience-vote leader — always barred from also being the jury leader
       let audId = null, maxV = 0;
       (pr.participants || []).forEach(p => { if ((p.votes||0) > maxV) { maxV = p.votes; audId = p.id; } });
-      if (maxV === 0 || pr.open !== false) audId = null;
+      if (maxV === 0) audId = null;
 
       const e = (jr.totals && jr.totals.ethno) || {};
       const w = (jr.totals && jr.totals.world) || {};
