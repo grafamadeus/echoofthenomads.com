@@ -1,39 +1,46 @@
+// ════════════════════════════════════
+// Echo of Nomads — public voting (self-hosted API, replaces Firebase)
+// ════════════════════════════════════
+const API_BASE        = "https://api.echoofthenomads.com";
+const GOOGLE_CLIENT_ID = "946233553017-h64ou08icrjua955hl8esmgpe49959ll.apps.googleusercontent.com";
+const POLL_MS         = 4000;
 
+// Client-clock fallback used only until /api/results is first reached.
 const VOTE_OPEN  = new Date("2026-09-02T12:00:00+06:00");
 const VOTE_CLOSE = new Date("2026-09-04T23:59:00+06:00");
 
-// Международный конкурс этнической песни — 21 участник из 20 стран.
-// number — номер выступления. Назначается по итогам жеребьёвки 2 сентября:
-// проставь число вместо null, порядок в массиве менять не нужно.
-// code — ISO-код страны, флаг берётся из ./assets/media/flags/<code>.svg
+// Display roster: names / country / flag code / photo / draw number.
+// Live vote counts, ordering and the open/closed state come from the API
+// (matched by `slug` — keep slugs in sync with server/data/participants.json).
 const PARTICIPANTS = [
-  { name: "Avcı Dişbudak Elif",                   country: "Турция",               code: "tr", number: null, photo: "./assets/media/members/elif.webp" },
-  { name: "Annys Batista",         country: "Куба",                 code: "cu", number: null, photo: "./assets/media/members/batista.webp" },
-  { name: "Rodrigo Villegas",             country: "Мексика",              code: "mx", number: null, photo: "./assets/media/members/villegas.webp" },
-  { name: "Roger Ricco",             country: "Бразилия",             code: "br", number: null, photo: "./assets/media/members/Roger Ricco.webp" },
-  { name: "Vasil Angelov",                        country: "Македония",            code: "mk", number: null, photo: "./assets/media/members/Angelov Vasil.webp" },
-  { name: "LVA",             country: "Болгария",             code: "bg", number: null, photo: "./assets/media/members/lva.webp" },
-  { name: "Vika Adamyan",                         country: "Армения",              code: "am", number: null, photo: "./assets/media/members/vika.webp" },
-  { name: "Hodaya",                     country: "США",                  code: "us", number: null, photo: "./assets/media/members/hodaya.webp" },
-  { name: "Elena Buga",                           country: "Молдова",              code: "md", number: null, photo: "./assets/media/members/buga.webp" },
-  { name: "Tina Notte",                    country: "Латвия",               code: "lv", number: null, photo: "./assets/media/members/naumenko.webp" },
-  { name: "Benjamin Hasanić",                     country: "Босния и Герцеговина",  code: "ba", number: null, photo: "./assets/media/members/hasanic.webp" },
-  { name: "Dany Leal",          country: "Испания",              code: "es", number: null, photo: "./assets/media/members/leal.webp" },
-  { name: "Thami Mbatha", country: "Южная Африка",          code: "za", number: null, photo: "./assets/media/members/thami.webp" },
-  { name: "Odmandakh Bayaraa",                    country: "Монголия",             code: "mn", number: null, photo: "./assets/media/members/odmandakh.jpeg" },
-  { name: "Ngo Chau Anh",                         country: "Вьетнам",              code: "vn", number: null, photo: "./assets/media/members/ngo chau.webp" },
-  { name: "Tleumbetova Zhasmin",                  country: "Казахстан",            code: "kz", number: null, photo: "./assets/media/members/zhasmin.webp" },
-  { name: "Zhumakanov Danial",                    country: "Россия",               code: "ru", number: null, photo: "./assets/media/members/danial.webp" },
-  { name: "Listen",                        country: "Южная Корея",           code: "kr", number: null, photo: "./assets/media/members/lee.webp" },
-  { name: "Деркембаев Нурдөөлөт",                 country: "Кыргызстан",           code: "kg", number: null, photo: "./assets/media/members/derkembaev.webp" },
-  { name: "Старбеков Рыскелди",                   country: "Кыргызстан",           code: "kg", number: null, photo: "./assets/media/members/starbekov.webp" },
+  { slug: "elif",          name: "Avcı Dişbudak Elif",   country: "Турция",               code: "tr", number: null, photo: "./assets/media/members/elif.webp" },
+  { slug: "batista",       name: "Annys Batista",        country: "Куба",                 code: "cu", number: null, photo: "./assets/media/members/batista.webp" },
+  { slug: "villegas",      name: "Rodrigo Villegas",     country: "Мексика",              code: "mx", number: null, photo: "./assets/media/members/villegas.webp" },
+  { slug: "roger-ricco",   name: "Roger Ricco",          country: "Бразилия",             code: "br", number: null, photo: "./assets/media/members/Roger Ricco.webp" },
+  { slug: "angelov-vasil", name: "Vasil Angelov",        country: "Македония",            code: "mk", number: null, photo: "./assets/media/members/Angelov Vasil.webp" },
+  { slug: "lva",           name: "LVA",                  country: "Болгария",             code: "bg", number: null, photo: "./assets/media/members/lva.webp" },
+  { slug: "vika",          name: "Vika Adamyan",         country: "Армения",              code: "am", number: null, photo: "./assets/media/members/vika.webp" },
+  { slug: "hodaya",        name: "Hodaya",               country: "США",                  code: "us", number: null, photo: "./assets/media/members/hodaya.webp" },
+  { slug: "buga",          name: "Elena Buga",           country: "Молдова",              code: "md", number: null, photo: "./assets/media/members/buga.webp" },
+  { slug: "naumenko",      name: "Tina Notte",           country: "Латвия",               code: "lv", number: null, photo: "./assets/media/members/naumenko.webp" },
+  { slug: "hasanic",       name: "Benjamin Hasanić",     country: "Босния и Герцеговина",  code: "ba", number: null, photo: "./assets/media/members/hasanic.webp" },
+  { slug: "leal",          name: "Dany Leal",            country: "Испания",              code: "es", number: null, photo: "./assets/media/members/leal.webp" },
+  { slug: "thami",         name: "Thami Mbatha",         country: "Южная Африка",          code: "za", number: null, photo: "./assets/media/members/thami.webp" },
+  { slug: "odmandakh",     name: "Odmandakh Bayaraa",    country: "Монголия",             code: "mn", number: null, photo: "./assets/media/members/odmandakh.jpeg" },
+  { slug: "ngo-chau",      name: "Ngo Chau Anh",         country: "Вьетнам",              code: "vn", number: null, photo: "./assets/media/members/ngo chau.webp" },
+  { slug: "zhasmin",       name: "Tleumbetova Zhasmin",  country: "Казахстан",            code: "kz", number: null, photo: "./assets/media/members/zhasmin.webp" },
+  { slug: "danial",        name: "Zhumakanov Danial",    country: "Россия",               code: "ru", number: null, photo: "./assets/media/members/danial.webp" },
+  { slug: "lee",           name: "Listen",               country: "Южная Корея",           code: "kr", number: null, photo: "./assets/media/members/lee.webp" },
+  { slug: "derkembaev",    name: "Деркембаев Нурдөөлөт", country: "Кыргызстан",           code: "kg", number: null, photo: "./assets/media/members/derkembaev.webp" },
+  { slug: "starbekov",     name: "Старбеков Рыскелди",   country: "Кыргызстан",           code: "kg", number: null, photo: "./assets/media/members/starbekov.webp" },
 ];
+
+const bySlug = (slug) => PARTICIPANTS.find(p => p.slug === slug) || null;
+const nameOf = (slug) => bySlug(slug)?.name || slug || "—";
 
 // Заглушка на случай отсутствующего фото участника (силуэт в цвете акцента).
 const NO_PHOTO = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E";
 
-
-// ════════════════════════════════════
 
 // ════════════════════════════════════
 // 🌐 ПЕРЕВОДЫ
@@ -242,19 +249,23 @@ const i18n = {
 };
 // ════════════════════════════════════
 
-let currentCandidate = null;
 let currentLang = 'ru';
+let currentSlug = null;
+
+// Live state from GET /api/results
+const live = { ready: false, open: null, opensAt: null, closesAt: null, total: 0, counts: {} };
+
+let myVote = null;
+try { myVote = localStorage.getItem('echo_vote') || null; } catch { /* private mode */ }
 
 // ── Применить язык ──
 window.setLang = (lang) => {
   currentLang = lang;
   const t = i18n[lang];
 
-  // Логотип hero
   const logo = document.getElementById('heroLogo');
   if (logo) logo.src = t.logo;
 
-  // Все data-i18n элементы
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key] === undefined) return;
@@ -265,68 +276,104 @@ window.setLang = (lang) => {
     }
   });
 
-  // Активная кнопка языка
   document.querySelectorAll('.header__lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
   });
 
-  // Перерисовать участников с новым языком
   renderMembers();
 };
 
-// ── Реальное время голосов ──
-// Обнулено к международному конкурсу. Голосование открывается 2 сентября.
-// Формат: "Имя участника": число голосов.
-const voteCounts = {};
+// ════════════════════════════════════
+// API polling
+// ════════════════════════════════════
+async function fetchResults() {
+  if (document.hidden) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/results`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    live.open     = !!data.open;
+    live.opensAt  = data.opensAt || null;
+    live.closesAt = data.closesAt || null;
+    live.total    = data.total || 0;
+    live.counts   = {};
+    for (const p of data.participants || []) {
+      live.counts[p.slug] = p.votes || 0;
+      const local = bySlug(p.slug);
+      if (local && p.number != null) local.number = p.number;
+    }
+    live.ready = true;
+    renderMembers();
+  } catch { /* keep last-known snapshot; UI stays up */ }
+}
 
-// ── Рендер списка участников ──
+function votingOpen() {
+  if (live.ready) return live.open === true;
+  const now = Date.now();
+  return now >= VOTE_OPEN.getTime() && now <= VOTE_CLOSE.getTime();
+}
+function beforeOpen() {
+  const opens = live.ready && live.opensAt ? Date.parse(live.opensAt) : VOTE_OPEN.getTime();
+  return Date.now() < opens;
+}
+
+// ════════════════════════════════════
+// Рендер списка участников
+// ════════════════════════════════════
 function renderMembers() {
   const list = document.getElementById('membersList');
   if (!list) return;
   const t = i18n[currentLang];
 
-  const sorted = [...PARTICIPANTS].sort((a, b) =>
-    (voteCounts[b.name] || 0) - (voteCounts[a.name] || 0)
-  );
-
-  const maxVotes = Math.max(1, ...Object.values(voteCounts).map(Number));
+  const rows = PARTICIPANTS.map(p => ({ ...p, votes: live.counts[p.slug] || 0 }));
+  const anyVotes = rows.some(r => r.votes > 0);
+  if (anyVotes) rows.sort((a, b) => b.votes - a.votes);
+  const maxVotes = Math.max(1, ...rows.map(r => r.votes));
+  const medals = ['🥇', '🥈', '🥉'];
 
   list.innerHTML = '';
-  sorted.forEach((p, i) => {
-    const votes  = voteCounts[p.name] || 0;
-    const medals = ['🥇', '🥈', '🥉'];
-    const rankEl = (i < 3 && votes > 0)
+  rows.forEach((p, i) => {
+    const rankEl = (i < 3 && p.votes > 0)
       ? `<div class="member-medal">${medals[i]}</div>`
       : `<div class="member-rank">${i + 1}</div>`;
-    const num    = (p.number != null && p.number !== '')
+    const num = (p.number != null && p.number !== '')
       ? `<span class="member-num">№${p.number}</span>` : '';
-    const pct    = Math.round((votes / maxVotes) * 100);
+    const pct = live.ready ? Math.round((p.votes / maxVotes) * 100) : 0;
+    const votesLine = live.ready
+      ? `${t.votes_label} <span>${p.votes}</span>`
+      : `<span style="opacity:.55">…</span>`;
+    const voted = myVote && myVote === p.slug;
+    const btn = voted
+      ? `<button class="member-vote-btn" disabled style="opacity:.55">✓</button>`
+      : `<button class="member-vote-btn" data-slug="${p.slug}">${t.vote_btn}</button>`;
 
     const row = document.createElement('div');
     row.className = 'member-row';
-    row.style.animationDelay = `${i * 0.05}s`;
+    row.style.animationDelay = `${i * 0.04}s`;
     row.innerHTML = `
       ${rankEl}
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-info">
         <div class="member-name">${num}<img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
         <div class="member-country">${p.country || ''}</div>
-        <div class="member-votes">${t.votes_label} <span>${votes}</span></div>
+        <div class="member-votes">${votesLine}</div>
         <div class="member-bar"><i style="--pct:${pct}%"></i></div>
       </div>
-      <button class="member-vote-btn" onclick="openVoteModal('${p.name}')">${t.vote_btn}</button>
+      ${btn}
     `;
     list.appendChild(row);
+  });
+
+  list.querySelectorAll('.member-vote-btn[data-slug]').forEach(b => {
+    b.addEventListener('click', () => window.openVoteModal(b.dataset.slug));
   });
 
   if (window.observeReveals) window.observeReveals();
 }
 
-// ── Жюри баллары ──
-// Обнулено к международному конкурсу. Формат: "Имя участника": сумма баллов.
+// ── Баллы жюри (пока статично — фаза 2) ──
 const juryTotals = {};
-
-function renderJuryScores(juryTotals) {
+function renderJuryScores(totals) {
   const list = document.getElementById('juryScoresList');
   if (!list) return;
   list.innerHTML = '';
@@ -336,33 +383,104 @@ function renderJuryScores(juryTotals) {
     row.innerHTML = `
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-name"><img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
-      <div class="jury-score-val">${juryTotals[p.name] || 0}</div>
+      <div class="jury-score-val">${totals[p.slug] || 0}</div>
     `;
     list.appendChild(row);
   });
 }
 
-// ── Шаги модалки ──
-function showStep(id) {
-  document.querySelectorAll('.modal-step').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// ════════════════════════════════════
+// Google Identity Services
+// ════════════════════════════════════
+let gsiReady = false;
+
+function initGsi() {
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    return void setTimeout(initGsi, 150);
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: onGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+  gsiReady = true;
 }
 
-// ── Открыть модалку ──
-window.openVoteModal = (candidate) => {
-  const now = new Date();
+function renderGsiButton() {
+  const el = document.getElementById('gsiButton');
+  if (!el) return;
+  if (!gsiReady) { el.textContent = '…'; return void setTimeout(renderGsiButton, 200); }
+  el.innerHTML = '';
+  google.accounts.id.renderButton(el, {
+    theme: 'filled_blue',
+    size: 'large',
+    shape: 'pill',
+    text: 'continue_with',
+    locale: currentLang,
+    width: 260,
+  });
+}
+
+async function onGoogleCredential(resp) {
   const t = i18n[currentLang];
-  if (now < VOTE_OPEN)  { alert(t.alert_not_yet); return; }
-  if (now > VOTE_CLOSE) { alert(t.alert_closed);  return; }
-  currentCandidate = candidate;
-  document.getElementById('candidateName').textContent = candidate;
-  document.getElementById('loginError').textContent = '';
-  showStep('modal-login');
+  const credential = resp && resp.credential;
+  const errEl = document.getElementById('loginError');
+  if (errEl) errEl.textContent = '';
+  if (!credential || !currentSlug) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ participant: currentSlug, credential }),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok && data.ok) {
+      setMyVote(currentSlug);
+      document.getElementById('successName').textContent = nameOf(currentSlug);
+      showStep('modal-success');
+      fetchResults();
+    } else if (res.status === 409 && data.error === 'already_voted') {
+      if (data.participant) setMyVote(data.participant);
+      document.getElementById('alreadyName').textContent = nameOf(data.participant || currentSlug);
+      showStep('modal-already');
+      fetchResults();
+    } else if (res.status === 403) {
+      alert(data.error === 'not_open' ? t.alert_not_yet : t.alert_closed);
+      closeModal();
+      fetchResults();
+    } else if (res.status === 400 || res.status === 401) {
+      if (errEl) errEl.textContent = t.error_auth;
+    } else {
+      if (errEl) errEl.textContent = t.error_general;
+    }
+  } catch {
+    if (errEl) errEl.textContent = t.error_general;
+  }
+}
+
+function setMyVote(slug) {
+  myVote = slug;
+  try { localStorage.setItem('echo_vote', slug); } catch { /* ignore */ }
+  renderMembers();
+}
+
+// ════════════════════════════════════
+// Модалка
+// ════════════════════════════════════
+function showStep(id) {
+  document.querySelectorAll('.modal-step').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function openModal() {
   document.getElementById('voteModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-};
+}
 
-// ── Закрыть модалку ──
 window.closeModal = () => {
   document.getElementById('voteModal').classList.remove('open');
   document.body.style.overflow = '';
@@ -372,11 +490,39 @@ window.handleOverlayClick = (e) => {
   if (e.target.id === 'voteModal') window.closeModal();
 };
 
+window.openVoteModal = (slug) => {
+  const t = i18n[currentLang];
 
+  if (!votingOpen()) {
+    alert(beforeOpen() ? t.alert_not_yet : t.alert_closed);
+    return;
+  }
+
+  openModal();
+
+  if (myVote) {
+    currentSlug = myVote;
+    document.getElementById('alreadyName').textContent = nameOf(myVote);
+    showStep('modal-already');
+    return;
+  }
+
+  currentSlug = slug;
+  document.getElementById('candidateName').textContent = nameOf(slug);
+  const errEl = document.getElementById('loginError');
+  if (errEl) errEl.textContent = '';
+  showStep('modal-login');
+  renderGsiButton();
+};
+
+// legacy hook (old inline onclick referenced this) — no-op guard
+window.signInWithGoogle = () => {};
 
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
   setLang('ky');
-  renderMembers();
   renderJuryScores(juryTotals);
+  fetchResults();
+  setInterval(fetchResults, POLL_MS);
+  initGsi();
 });

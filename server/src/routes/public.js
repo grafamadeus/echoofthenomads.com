@@ -16,6 +16,7 @@ export default async function publicRoutes(fastify) {
   // The endpoint the site polls (~every 4s). Served from the in-memory snapshot.
   fastify.get('/api/results', async (_req, reply) => {
     reply.header('Cache-Control', 'public, max-age=2, stale-while-revalidate=4');
+    reply.header('Vary', 'Origin');
     return getResults();
   });
 

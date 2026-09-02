@@ -1039,6 +1039,16 @@ html.js .reveal.is-visible {
   background: linear-gradient(135deg, #e8c547, #f0c040, #c9a227);
   color: #000;
 }
+.gsi-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 16px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.gsi-button > div { color-scheme: light; }
 .modal-error {
   color: #ff6b6b;
   font-size: 0.78rem;
