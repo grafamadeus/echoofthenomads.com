@@ -367,106 +367,61 @@
 
   
 
-  <script type="module">
-    import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot }
-                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <script>
+  // Repointed off Firebase — polls the self-hosted API's cached results endpoint.
+  const API = "https://api.echoofthenomads.com";
+  const PHOTO = {
+    "elif":"./assets/media/members/elif.webp","batista":"./assets/media/members/batista.webp",
+    "villegas":"./assets/media/members/villegas.webp","roger-ricco":"./assets/media/members/Roger Ricco.webp",
+    "angelov-vasil":"./assets/media/members/Angelov Vasil.webp","lva":"./assets/media/members/lva.webp",
+    "vika":"./assets/media/members/vika.webp","hodaya":"./assets/media/members/hodaya.webp",
+    "buga":"./assets/media/members/buga.webp","naumenko":"./assets/media/members/naumenko.webp",
+    "hasanic":"./assets/media/members/hasanic.webp","leal":"./assets/media/members/leal.webp",
+    "thami":"./assets/media/members/thami.webp","odmandakh":"./assets/media/members/odmandakh.jpeg",
+    "ngo-chau":"./assets/media/members/ngo chau.webp","zhasmin":"./assets/media/members/zhasmin.webp",
+    "danial":"./assets/media/members/danial.webp","lee":"./assets/media/members/lee.webp",
+    "derkembaev":"./assets/media/members/derkembaev.webp","starbekov":"./assets/media/members/starbekov.webp"
+  };
+  const NO_PHOTO = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E";
+  const img = (slug) => PHOTO[slug] || NO_PHOTO;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLA3dWcxxvNrXlfMtVOwWC1n3cUHORils",
-      authDomain: "national-selection.firebaseapp.com",
-      projectId: "national-selection",
-      storageBucket: "national-selection.firebasestorage.app",
-      messagingSenderId: "753183678536",
-      appId: "1:753183678536:web:cbab2779087c0b8e73f87d"
-    };
-
-    const PARTICIPANTS = [
-      { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
-      { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-      { name: "Сонунбеков Байаман",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
-      { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
-      { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
-      { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
-      { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
-      { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
-      { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
-      { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
-    ];
-
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
-
-    let leadingName = null;
-    let voteCounts = {};
-
-    onSnapshot(collection(db, 'votes'), (snapshot) => {
-      // Считаем голоса
-      const newCounts = {};
-      PARTICIPANTS.forEach(p => { newCounts[p.name] = 0; });
-
-      snapshot.forEach(docSnap => {
-        const participant = docSnap.data().participant;
-        if (newCounts[participant] !== undefined) newCounts[participant]++;
-      });
-
-      voteCounts = newCounts;
-
-      // Лидер — у кого больше всего голосов
-      let maxVotes = -1;
-      PARTICIPANTS.forEach(p => {
-        if (newCounts[p.name] > maxVotes) {
-          maxVotes = newCounts[p.name];
-          leadingName = p.name;
-        }
-      });
-
-      renderLive();
+  async function tick() {
+    try {
+      const r = await fetch(API + '/api/results', { cache: 'no-store' });
+      const d = await r.json();
+      const rows = (d.participants || []).slice().sort((a,b) => (b.votes - a.votes) || (a.id - b.id));
+      render(rows);
+    } catch (e) {}
+  }
+  function render(rows) {
+    const any = rows.some(r => r.votes > 0);
+    const top = rows[0];
+    const card = document.getElementById('featuredCard');
+    if (!any || !top) {
+      card.innerHTML = '<div class="live-empty">Добуш берүүнү күтүүдө...</div>';
+    } else {
+      card.innerHTML =
+        '<img class="live-featured__photo" src="' + img(top.slug) + '" onerror="this.onerror=null;this.src=\'' + NO_PHOTO + '\'" alt="">' +
+        '<div class="live-featured__new-badge">🏆 Лидер</div>' +
+        '<div class="live-featured__name">' + top.name + '</div>' +
+        '<div class="live-featured__score">' + top.votes + '</div>' +
+        '<div class="live-featured__score-label">добуш</div>';
+    }
+    const list = document.getElementById('liveList');
+    list.innerHTML = '';
+    rows.forEach((p, idx) => {
+      const it = document.createElement('div');
+      it.className = 'live-item' + (any && idx === 0 ? ' active' : '');
+      it.innerHTML =
+        '<div class="live-item__num">' + (idx + 1) + '</div>' +
+        '<img class="live-item__photo" src="' + img(p.slug) + '" onerror="this.onerror=null;this.src=\'' + NO_PHOTO + '\'" alt="">' +
+        '<div class="live-item__name">' + p.name + '</div>' +
+        '<div class="live-item__score">' + (p.votes || '—') + '</div>';
+      list.appendChild(it);
     });
-
-    function renderLive() {
-      renderFeatured();
-      renderList();
-    }
-
-    function renderFeatured() {
-      const card = document.getElementById('featuredCard');
-      if (!leadingName) {
-        card.innerHTML = `<div class="live-empty">Добуш берүүнү күтүүдө...</div>`;
-        return;
-      }
-      const p = PARTICIPANTS.find(x => x.name === leadingName);
-      if (!p) return;
-      const votes = voteCounts[p.name] || 0;
-
-      card.innerHTML = `
-        <img class="live-featured__photo" src="${p.photo}" alt="${p.name}">
-        <div class="live-featured__new-badge">🏆 Лидер</div>
-        <div class="live-featured__name">${p.name}</div>
-        <div class="live-featured__score">${votes}</div>
-        <div class="live-featured__score-label">добуш</div>
-      `;
-    }
-
-    function renderList() {
-      const list = document.getElementById('liveList');
-      list.innerHTML = '';
-
-      PARTICIPANTS.forEach((p, idx) => {
-        const votes = voteCounts[p.name] || 0;
-        const isActive = p.name === leadingName;
-
-        const item = document.createElement('div');
-        item.className = `live-item${isActive ? ' active' : ''}`;
-        item.innerHTML = `
-          <div class="live-item__num">${idx + 1}</div>
-          <img class="live-item__photo" src="${p.photo}" alt="${p.name}">
-          <div class="live-item__name">${p.name}</div>
-          <div class="live-item__score">${votes || '—'}</div>
-        `;
-        list.appendChild(item);
-      });
-    }
+  }
+  tick();
+  setInterval(tick, 3000);
 </script>
 </body>
 </html>

@@ -1,615 +1,294 @@
 <!DOCTYPE html>
-<html lang="ky">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Жюри — Улуттук тандоо 2026</title>
+  <meta name="robots" content="noindex">
+  <title>Жюри — Echo of Nomads 2026</title>
+  <link rel="icon" href="./assets/media/favicon.ico" type="image/x-icon">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    :root {
-      --navy-dark: #0a0f2c;
-      --navy: #1a3a8f;
-      --gold: #f5c400;
-      --gold-dark: #f0c040;
-      --white: #ffffff;
-      --text-muted: #888;
+    :root{
+      --navy-dark:#0a0f2c; --panel:#141b3d; --gold:#f0c040; --gold-dark:#c9a227;
+      --white:#fff; --muted:#93a0c8; --line:rgba(240,192,64,.18);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+    html,body{min-height:100%;background:var(--navy-dark);color:var(--white);
+      font-family:'Inter',system-ui,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
 
-    html, body {
-      min-height: 100%;
-      background: var(--navy-dark);
-      color: var(--white);
-      font-family: 'Segoe UI', sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
+    /* ── centered screens ── */
+    .screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+    .box{max-width:360px;width:100%}
+    .box .icon{font-size:2.6rem;margin-bottom:12px}
+    .box h2{font-size:1.15rem;font-weight:700;margin-bottom:6px}
+    .box p{font-size:.85rem;color:var(--muted);margin-bottom:22px;line-height:1.5}
+    .gsi-wrap{display:flex;justify-content:center;min-height:44px}
+    .err{color:#ff6b6b;font-size:.8rem;margin-top:10px;min-height:18px}
+    .linkbtn{margin-top:18px;font-size:.8rem;color:var(--gold);text-decoration:underline}
 
-    /* ── WAVES TOP ── */
-    .waves-top {
-      position: relative;
-      height: 100px;
-      overflow: hidden;
-      transform: scaleY(-1);
-      background: var(--navy-dark);
-    }
-    .waves-top .air {
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: 80px;
-      background: url(https://1.bp.blogspot.com/-xQUc-TovqDk/XdxogmMqIRI/AAAAAAAACvI/AizpnE509UMGBcTiLJ58BC6iViPYGYQfQCLcBGAsYHQ/s1600/wave.png);
-      background-size: 1000px 80px;
-    }
-    .waves-top .air1 { animation: wave 30s linear infinite; opacity: 1; }
-    .waves-top .air2 { animation: wave2 15s linear infinite; opacity: 0.5; animation-delay: -5s; bottom: 8px; }
+    /* ── main ── */
+    #mainScreen{display:none}
+    .topbar{position:sticky;top:0;z-index:5;background:rgba(10,15,44,.92);backdrop-filter:blur(6px);
+      border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;
+      justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .topbar .who{font-size:.75rem;color:var(--muted)}
+    .topbar .who b{color:var(--gold);font-weight:600}
+    .topbar .out{font-size:.75rem;color:var(--muted);text-decoration:underline}
+    .tabs{display:flex;gap:8px}
+    .tab{padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:.8rem;font-weight:600;color:var(--muted)}
+    .tab.active{background:var(--gold);color:#000;border-color:var(--gold)}
+    .tab .now{display:inline-block;width:6px;height:6px;border-radius:50%;background:#51cf66;margin-left:6px;vertical-align:middle}
 
-    /* ── WAVES BOTTOM ── */
-    .waves-bottom {
-      position: relative;
-      height: 100px;
-      overflow: hidden;
-      background: var(--navy-dark);
-    }
-    .waves-bottom .air {
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: 80px;
-      background: url(https://1.bp.blogspot.com/-xQUc-TovqDk/XdxogmMqIRI/AAAAAAAACvI/AizpnE509UMGBcTiLJ58BC6iViPYGYQfQCLcBGAsYHQ/s1600/wave.png);
-      background-size: 1000px 80px;
-    }
-    .waves-bottom .air1 { animation: wave 30s linear infinite; opacity: 1; }
-    .waves-bottom .air2 { animation: wave2 15s linear infinite; opacity: 0.5; animation-delay: -5s; bottom: 8px; }
+    .wrap{max-width:760px;margin:0 auto;padding:20px 14px 60px}
+    .hint{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:18px}
+    .closed{text-align:center;color:#ffb84d;font-size:.85rem;margin-bottom:16px}
 
-    @keyframes wave  { 0% { background-position-x: 0px; } 100% { background-position-x: 1000px; } }
-    @keyframes wave2 { 0% { background-position-x: 0px; } 100% { background-position-x: -1000px; } }
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+    .card__top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .card__photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(240,192,64,.4);flex-shrink:0;background:#1a2540}
+    .card__id{flex:1;min-width:0}
+    .card__name{font-size:.95rem;font-weight:700}
+    .card__country{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:2px}
+    .card__country img{width:20px;height:14px;border-radius:2px;object-fit:cover}
+    .card__total{text-align:center;min-width:44px}
+    .card__total b{display:block;font-size:1.3rem;font-weight:800;color:var(--gold);line-height:1}
+    .card__total span{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+    .scores{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}
+    .sbtn{padding:16px 0;background:rgba(255,255,255,.05);border:1px solid rgba(240,192,64,.2);
+      border-radius:8px;color:var(--muted);font-size:.9rem;font-weight:700;transition:.12s}
+    .sbtn:hover{background:rgba(240,192,64,.14);color:var(--gold)}
+    .sbtn.on{background:var(--gold);color:#000;border-color:var(--gold)}
+    .saved{margin-top:8px;font-size:.72rem;color:#51cf66;min-height:16px;text-align:right}
 
-    /* ── PIN SCREEN ── */
-    #pinScreen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .pin-box {
-      background: linear-gradient(160deg, #16213e, #0f3460);
-      border: 1px solid rgba(240,192,64,0.3);
-      border-radius: 20px;
-      padding: 40px 28px;
-      width: 100%;
-      max-width: 340px;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-    .pin-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .pin-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--white);
-      margin-bottom: 6px;
-    }
-    .pin-desc {
-      font-size: 0.82rem;
-      color: #aaa;
-      margin-bottom: 24px;
-    }
-    .pin-input {
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(240,192,64,0.3);
-      border-radius: 10px;
-      padding: 14px 16px;
-      color: var(--white);
-      font-size: 1.4rem;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: 6px;
-      outline: none;
-      margin-bottom: 12px;
-    }
-    .pin-input:focus { border-color: var(--gold); }
-    .pin-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #e8c547, #f0c040, #c9a227);
-      color: #000;
-      font-weight: 700;
-      font-size: 1rem;
-      border-radius: 10px;
-      transition: opacity 0.2s;
-    }
-    .pin-btn:hover { opacity: 0.9; }
-    .pin-error {
-      color: #ff6b6b;
-      font-size: 0.8rem;
-      margin-top: 8px;
-      min-height: 18px;
-    }
-
-    /* ── MAIN SCREEN ── */
-    #mainScreen { display: none; }
-
-    .jury-header {
-      background: rgba(240,192,64,0.08);
-      border-bottom: 1px solid rgba(240,192,64,0.2);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .jury-header__title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--gold);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .jury-header__user {
-      font-size: 0.75rem;
-      color: #aaa;
-    }
-
-    .jury-content {
-      width: 80%;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
-
-    .jury-title {
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--gold);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 6px;
-    }
-    .jury-subtitle {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #aaa;
-      margin-bottom: 24px;
-    }
-
-    /* ── MEMBER CARDS ── */
-    .jury-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .jury-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(240,192,64,0.15);
-      border-radius: 14px;
-      padding: 14px;
-      transition: border-color 0.2s;
-    }
-    .jury-card.voted {
-      border-color: rgba(240,192,64,0.5);
-      background: rgba(240,192,64,0.05);
-    }
-
-    .jury-card__top {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .jury-card__photo {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(240,192,64,0.4);
-      flex-shrink: 0;
-    }
-    .jury-card__name {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--white);
-      flex: 1;
-    }
-    .jury-card__score-display {
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--gold);
-      min-width: 32px;
-      text-align: center;
-    }
-
-    /* Score buttons */
-    .score-btns {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-    .score-btn {
-      padding: 30px 0;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(240,192,64,0.2);
-      border-radius: 8px;
-      color: #aaa;
-      font-size: 0.9rem;
-      font-weight: 700;
-      transition: all 0.15s;
-    }
-    .score-btn:hover {
-      background: rgba(240,192,64,0.15);
-      color: var(--gold);
-      border-color: rgba(240,192,64,0.4);
-    }
-    .score-btn.selected {
-      background: var(--gold);
-      color: #000;
-      border-color: var(--gold);
-    }
-
-    .jury-card__submit {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg, #e8c547, #f0c040, #c9a227);
-      color: #000;
-      font-weight: 700;
-      font-size: 0.85rem;
-      border-radius: 8px;
-      transition: opacity 0.2s;
-    }
-    .jury-card__submit:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .jury-card__submit:hover:not(:disabled) { opacity: 0.9; }
-
-    .jury-card__voted-badge {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      color: #51cf66;
-      font-weight: 600;
-    }
-    .jury-card.voted .jury-card__voted-badge { display: flex; }
-    .jury-card.voted .jury-card__submit { display: none; }
-    .jury-card.voted .score-btn { pointer-events: none; }
-
-    .jury-total-score {
-    font-size: 0.8rem;
-    color: #aaa;
-    margin-bottom: 10px;
-    }
-    .jury-total-score span {
-    color: var(--gold);
-    font-weight: 700;
-    font-size: 1rem;
-    }
-
-    /* ── LOGIN SCREEN ── */
-    #loginScreen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .login-box {
-      background: linear-gradient(160deg, #16213e, #0f3460);
-      border: 1px solid rgba(240,192,64,0.3);
-      border-radius: 20px;
-      padding: 40px 28px;
-      width: 100%;
-      max-width: 340px;
-      text-align: center;
-    }
-    .login-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .login-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
-    .login-desc { font-size: 0.82rem; color: #aaa; margin-bottom: 24px; }
-    .login-error { color: #ff6b6b; font-size: 0.8rem; margin-top: 8px; min-height: 18px; }
-
-    .google-btn {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 13px 16px;
-      background: #fff;
-      color: #333;
-      font-weight: 700;
-      font-size: 0.95rem;
-      border-radius: 10px;
-      transition: opacity 0.2s;
-    }
-    .google-btn:hover { opacity: 0.9; }
-
-    /* ── ACCESS DENIED ── */
-    #deniedScreen {
-      display: none;
-      min-height: 100vh;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      text-align: center;
-    }
-    .denied-box {
-      max-width: 340px;
-    }
-    .denied-icon { font-size: 3rem; margin-bottom: 16px; }
-    .denied-title { font-size: 1.2rem; font-weight: 700; color: #ff6b6b; margin-bottom: 8px; }
-    .denied-desc { color: #aaa; font-size: 0.85rem; }
-
-    
+    @media(min-width:620px){ .scores{gap:6px} .sbtn{padding:20px 0} }
   </style>
 </head>
 <body>
 
-  <!-- PIN SCREEN -->
-  <div id="pinScreen">
-    <div class="pin-box">
-      <div class="pin-icon">🔐</div>
-      <h2 class="pin-title">Жюри панели</h2>
-      <p class="pin-desc">Кирүү үчүн PIN кодду жазыңыз</p>
-      <input type="password" class="pin-input" id="pinInput" placeholder="···" maxlength="10" inputmode="numeric">
-      <button class="pin-btn" onclick="checkPin()">Кирүү</button>
-      <div class="pin-error" id="pinError"></div>
+  <!-- LOGIN -->
+  <div id="loginScreen" class="screen">
+    <div class="box">
+      <div class="icon">🎵</div>
+      <h2>Панель жюри</h2>
+      <p>Войдите Google-аккаунтом жюри</p>
+      <div id="gsiButton" class="gsi-wrap"></div>
+      <div class="err" id="loginError"></div>
     </div>
   </div>
 
-  <!-- LOGIN SCREEN (Google) -->
-  <div id="loginScreen" style="display:none;">
-    <div class="login-box">
-      <div class="login-icon">🎵</div>
-      <h2 class="login-title">Жюри аккаунту</h2>
-      <p class="login-desc">Жюри Google аккаунту менен кириңиз</p>
-      <button class="google-btn" onclick="signInGoogle()">
-        <svg width="20" height="20" viewBox="0 0 48 48">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        </svg>
-        Google менен кирүү
-      </button>
-      <div class="login-error" id="loginError"></div>
+  <!-- DENIED -->
+  <div id="deniedScreen" class="screen" style="display:none">
+    <div class="box">
+      <div class="icon">🚫</div>
+      <h2 style="color:#ff6b6b">Доступа нет</h2>
+      <p>Эта страница только для членов жюри. Этот аккаунт не в списке.</p>
+      <button class="linkbtn" onclick="location.reload()">Войти другим аккаунтом</button>
     </div>
   </div>
 
-  <!-- ACCESS DENIED -->
-  <div id="deniedScreen">
-    <div class="denied-box">
-      <div class="denied-icon">🚫</div>
-      <h2 class="denied-title">Уруксат жок</h2>
-      <p class="denied-desc">Бул барак жюри мүчөлөрү үчүн гана.</p>
-      <button class="pin-btn" style="margin-top:20px;" onclick="signOutJury()">Чыгуу</button>
-    </div>
-  </div>
-
-  <!-- MAIN SCREEN -->
+  <!-- MAIN -->
   <div id="mainScreen">
-    <div class="waves-top">
-      <div class="air air1"></div>
-      <div class="air air2"></div>
+    <div class="topbar">
+      <div class="who">Жюри: <b id="jurorName">—</b></div>
+      <div class="tabs" id="catTabs"></div>
+      <button class="out" onclick="signOut()">Выйти</button>
     </div>
-    <div class="jury-content">
-    <div class="jury-header__user" id="juryUserEmail"></div>
-      <h2 class="jury-title">Катышуучулар</h2>
-      <p class="jury-subtitle">Ар бир катышуучуга 1ден 10го чейин балл коюңуз</p>
-      <div class="jury-grid" id="juryGrid"></div>
-    </div>
-
-    <div class="waves-bottom">
-      <div class="air air1"></div>
-      <div class="air air2"></div>
+    <div class="wrap">
+      <div class="hint">Нажмите оценку 1–10 — сохраняется сразу. Можно менять до закрытия.</div>
+      <div class="closed" id="closedBanner" style="display:none">Оценивание закрыто администратором</div>
+      <div id="grid"></div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut }
-                                 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot }
-                                 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <script>
+  const API = "https://api.echoofthenomads.com";
+  const GOOGLE_CLIENT_ID = "946233553017-h64ou08icrjua955hl8esmgpe49959ll.apps.googleusercontent.com";
+  const CAT_LABEL = { ethno: "Этно-хит", world: "Мировой хит" };
+  const PHOTO = {
+    "elif":"./assets/media/members/elif.webp","batista":"./assets/media/members/batista.webp",
+    "villegas":"./assets/media/members/villegas.webp","roger-ricco":"./assets/media/members/Roger Ricco.webp",
+    "angelov-vasil":"./assets/media/members/Angelov Vasil.webp","lva":"./assets/media/members/lva.webp",
+    "vika":"./assets/media/members/vika.webp","hodaya":"./assets/media/members/hodaya.webp",
+    "buga":"./assets/media/members/buga.webp","naumenko":"./assets/media/members/naumenko.webp",
+    "hasanic":"./assets/media/members/hasanic.webp","leal":"./assets/media/members/leal.webp",
+    "thami":"./assets/media/members/thami.webp","odmandakh":"./assets/media/members/odmandakh.jpeg",
+    "ngo-chau":"./assets/media/members/ngo chau.webp","zhasmin":"./assets/media/members/zhasmin.webp",
+    "danial":"./assets/media/members/danial.webp","lee":"./assets/media/members/lee.webp",
+    "derkembaev":"./assets/media/members/derkembaev.webp","starbekov":"./assets/media/members/starbekov.webp"
+  };
+  const NO_PHOTO = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLA3dWcxxvNrXlfMtVOwWC1n3cUHORils",
-      authDomain: "national-selection.firebaseapp.com",
-      projectId: "national-selection",
-      storageBucket: "national-selection.firebasestorage.app",
-      messagingSenderId: "753183678536",
-      appId: "1:753183678536:web:cbab2779087c0b8e73f87d"
-    };
+  let token = null;
+  try { token = sessionStorage.getItem('jury_token'); } catch {}
+  let participants = [];
+  let myScores = { ethno:{}, world:{} };
+  let totals = { ethno:{}, world:{} };
+  let panel = { open:true, category:'ethno' };
+  let viewCat = 'ethno';
+  let gsiReady = false;
 
-    const JURY_EMAILS = [
-      "jury1.wng@gmail.com",
-      "jury2.wng@gmail.com",
-      "echonomad25@gmail.com"
-    ];
+  const H = () => ({ 'Authorization':'Bearer '+token, 'Content-Type':'application/json' });
+  const show = (id) => {
+    ['loginScreen','deniedScreen'].forEach(s => { const e=document.getElementById(s); if(e) e.style.display='none'; });
+    document.getElementById('mainScreen').style.display='none';
+    const el = document.getElementById(id);
+    if (el) el.style.display = (id === 'mainScreen') ? 'block' : 'flex';
+  };
+  function logout() {
+    token = null;
+    try { sessionStorage.removeItem('jury_token'); } catch {}
+    show('loginScreen'); renderGsi();
+  }
+  window.signOut = logout;
 
-    const PARTICIPANTS = [
-      { name: "Абдышова Үмүтай",        photo: "./assets/media/members/Абдышова Үмүтай.webp" },
-      { name: "Абжалова Луиза",         photo: "./assets/media/members/Абжалова Луиза.webp" },
-      { name: "Сонунбеков Байаман",     photo: "./assets/media/members/Байаман Сонунбеков.webp" },
-      { name: "Деркембаев Нурдөөлөт",   photo: "./assets/media/members/ДОКУ.webp" },
-      { name: "Нур Чолпон",             photo: "./assets/media/members/НУРЧОЛПОН.webp" },
-      { name: "Нурбек уулу Эржан",      photo: "./assets/media/members/ЭРЖАН.webp" },
-      { name: "Сапарбайева Амина",      photo: "./assets/media/members/Сапарбайева Амина.webp" },
-      { name: "Сатыбалдиева Бактыгүл", photo: "./assets/media/members/Сатыбалдиева Бактыгүл.webp" },
-      { name: "Старбеков Рыскелди",     photo: "./assets/media/members/Старбеков Рыскелди.webp" },
-      { name: "Черикова Нуркамила",     photo: "./assets/media/members/НУРКАМИЛА.webp" },
-    ];
-
-    const app  = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db   = getFirestore(app);
-
-    let currentUser = null;
-    let selectedScores = {};
-    let submittedScores = {};
-    let totalScores = {}; // ← НОВОЕ: суммарные баллы всех жюри
-
-    // ── PIN проверка ──
-    window.checkPin = async () => {
-      const pin = document.getElementById('pinInput').value.trim();
-      const errEl = document.getElementById('pinError');
-      errEl.textContent = '';
-      try {
-        const pinDoc = await getDoc(doc(db, 'settings', 'jury'));
-        if (!pinDoc.exists()) {
-          errEl.textContent = 'PIN не настроен. Обратитесь к администратору.';
-          return;
-        }
-        if (pin === String(pinDoc.data().pin)) {
-          document.getElementById('pinScreen').style.display = 'none';
-          document.getElementById('loginScreen').style.display = 'flex';
-        } else {
-          errEl.textContent = 'Неверный PIN. Попробуйте снова.';
-          document.getElementById('pinInput').value = '';
-        }
-      } catch(e) {
-        errEl.textContent = 'Ошибка. Попробуйте снова.';
-        console.error(e);
+  // ── Google ──
+  function initGsi() {
+    if (!window.google || !google.accounts || !google.accounts.id) return void setTimeout(initGsi, 150);
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onCredential, auto_select:false });
+    gsiReady = true;
+    if (!token) renderGsi();
+  }
+  function renderGsi() {
+    const el = document.getElementById('gsiButton');
+    if (!el) return;
+    if (!gsiReady) { el.textContent = '…'; return void setTimeout(renderGsi, 200); }
+    el.innerHTML = '';
+    google.accounts.id.renderButton(el, { theme:'filled_blue', size:'large', shape:'pill', text:'continue_with', width:260 });
+  }
+  async function onCredential(resp) {
+    const errEl = document.getElementById('loginError');
+    errEl.textContent = '';
+    try {
+      const r = await fetch(API + '/api/jury/login', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ credential: resp.credential }),
+      });
+      const d = await r.json().catch(()=>({}));
+      if (r.ok && d.ok) {
+        token = d.token;
+        try { sessionStorage.setItem('jury_token', token); } catch {}
+        document.getElementById('jurorName').textContent = d.juror?.name || '—';
+        show('mainScreen');
+        await loadAll();
+      } else if (r.status === 403) {
+        show('deniedScreen');
+      } else {
+        errEl.textContent = 'Ошибка входа. Попробуйте снова.';
       }
-    };
+    } catch { errEl.textContent = 'Нет связи с сервером.'; }
+  }
 
-    document.getElementById('pinInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') window.checkPin();
+  // ── data ──
+  async function loadAll() {
+    try {
+      const pr = await fetch(API + '/api/results', { cache:'no-store' });
+      const pd = await pr.json();
+      participants = (pd.participants || []).slice().sort((a,b) => a.id - b.id);
+    } catch {}
+    await refreshState();
+    await refreshTotals();
+    viewCat = panel.category;
+    renderTabs();
+    renderGrid();
+  }
+  async function refreshState() {
+    const r = await fetch(API + '/api/jury/state', { headers: H(), cache:'no-store' });
+    if (r.status === 401) return logout();
+    const d = await r.json();
+    panel.open = d.open; panel.category = d.category;
+    myScores = { ethno: d.scores.ethno || {}, world: d.scores.world || {} };
+  }
+  async function refreshTotals() {
+    try {
+      const r = await fetch(API + '/api/jury/results', { cache:'no-store' });
+      const d = await r.json();
+      totals = { ethno: d.totals.ethno || {}, world: d.totals.world || {} };
+      panel.open = d.open; panel.category = d.category;
+    } catch { return; }
+    document.getElementById('closedBanner').style.display = panel.open ? 'none' : 'block';
+    renderTabs();
+    participants.forEach(p => {
+      const b = document.querySelector(`#tot-${p.id} b`);
+      if (b) b.textContent = totals[viewCat][p.id]?.total ?? 0;
     });
-
-    // ── Google вход ──
-    window.signInGoogle = async () => {
-      const errEl = document.getElementById('loginError');
-      errEl.textContent = '';
-      try {
-        const result = await signInWithPopup(auth, new GoogleAuthProvider());
-        const email = result.user.email;
-        if (!JURY_EMAILS.includes(email)) {
-          await signOut(auth);
-          document.getElementById('loginScreen').style.display = 'none';
-          document.getElementById('deniedScreen').style.display = 'flex';
-          return;
-        }
-        currentUser = result.user;
-        document.getElementById('loginScreen').style.display = 'none';
-        initJuryPanel();
-      } catch(e) {
-        if (e.code !== 'auth/popup-closed-by-user')
-          errEl.textContent = 'Ошибка входа. Попробуйте снова.';
-      }
-    };
-
-    window.signOutJury = async () => {
-      await signOut(auth);
-      location.reload();
-    };
-
-    // ── Инициализация панели ──
-    async function initJuryPanel() {
-      document.getElementById('mainScreen').style.display = 'block';
-      document.getElementById('juryUserEmail').textContent = currentUser.email;
-
-      const juryId = currentUser.uid;
-      const existingDoc = await getDoc(doc(db, 'jury_votes', juryId));
-      if (existingDoc.exists()) {
-        submittedScores = existingDoc.data().scores || {};
-      }
-
-      renderJuryGrid();
-
-      // ← НОВОЕ: слушаем все баллы жюри в реальном времени
-      onSnapshot(collection(db, 'jury_votes'), (snapshot) => {
-        totalScores = {};
-        snapshot.forEach(docSnap => {
-          const scores = docSnap.data().scores || {};
-          Object.entries(scores).forEach(([name, score]) => {
-            totalScores[name] = (totalScores[name] || 0) + score;
-          });
-        });
-        // Обновляем только цифры без перерисовки карточек
-        PARTICIPANTS.forEach((p, idx) => {
-          const el = document.getElementById(`total-score-${idx}`);
-          if (el) el.textContent = totalScores[p.name] || 0;
-        });
+  }
+  async function setScore(pid, score) {
+    if (!panel.open) { alert('Оценивание закрыто администратором.'); return; }
+    myScores[viewCat][pid] = score;
+    paintCard(pid);
+    const saved = document.querySelector(`#saved-${pid}`);
+    try {
+      const r = await fetch(API + '/api/jury/score', {
+        method:'PUT', headers: H(),
+        body: JSON.stringify({ participantId: pid, category: viewCat, score }),
       });
+      if (r.status === 401) return logout();
+      if (!r.ok) { if (saved){saved.textContent='не сохранилось'; saved.style.color='#ff6b6b';} return; }
+      if (saved) { saved.textContent = 'сохранено ✓'; saved.style.color = '#51cf66'; }
+      refreshTotals();
+    } catch {
+      if (saved) { saved.textContent = 'нет связи'; saved.style.color = '#ff6b6b'; }
     }
+  }
 
-    // ── Рендер карточек ──
-    function renderJuryGrid() {
-      const grid = document.getElementById('juryGrid');
-      grid.innerHTML = '';
-
-      PARTICIPANTS.forEach((p, idx) => {
-        const alreadyVoted = submittedScores[p.name] !== undefined;
-        const currentScore = selectedScores[p.name] || submittedScores[p.name] || 0;
-
-        const card = document.createElement('div');
-        card.className = `jury-card${alreadyVoted ? ' voted' : ''}`;
-        card.id = `card-${idx}`;
-
-        let scoreBtns = '';
-        for (let i = 1; i <= 10; i++) {
-          scoreBtns += `<button class="score-btn${currentScore === i ? ' selected' : ''}" 
-            onclick="selectScore(${idx}, '${p.name}', ${i})">${i}</button>`;
-        }
-
-        card.innerHTML = `
-          <div class="jury-card__top">
-            <img class="jury-card__photo" src="${p.photo}" alt="${p.name}">
-            <div class="jury-card__name">${p.name}</div>
-            <div class="jury-card__score-display" id="total-score-${idx}">
-            ${totalScores[p.name] || '—'}
-            </div>
+  // ── render ──
+  function renderTabs() {
+    const el = document.getElementById('catTabs');
+    el.innerHTML = ['ethno','world'].map(c =>
+      `<button class="tab${c===viewCat?' active':''}" data-cat="${c}">${CAT_LABEL[c]}${c===panel.category?'<span class="now" title="сейчас оценивается"></span>':''}</button>`
+    ).join('');
+    el.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+      viewCat = b.dataset.cat; renderTabs(); renderGrid();
+    }));
+  }
+  function paintCard(pid) {
+    const wrap = document.querySelector(`#sc-${pid}`);
+    if (!wrap) return;
+    const mine = myScores[viewCat][pid];
+    wrap.querySelectorAll('.sbtn').forEach((btn,i) => btn.classList.toggle('on', i+1 === mine));
+  }
+  function renderGrid() {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    participants.forEach(p => {
+      const mine = myScores[viewCat][p.id];
+      const tot = totals[viewCat][p.id]?.total ?? 0;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card__top">
+          <img class="card__photo" src="${PHOTO[p.slug]||NO_PHOTO}" alt="" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
+          <div class="card__id">
+            <div class="card__name">${p.name}</div>
+            <div class="card__country"><img src="./assets/media/flags/${p.code}.svg" alt="">${p.country||''}</div>
           </div>
-          <div class="score-btns">${scoreBtns}</div>
-          <div class="jury-card__voted-badge">✅ Балл берилди: <strong>${submittedScores[p.name] || ''}</strong></div>
-          <button class="jury-card__submit" id="submit-${idx}" 
-            ${!selectedScores[p.name] ? 'disabled' : ''}
-            onclick="submitScore('${p.name}', ${idx})">
-            Баллды жөнөтүү
-          </button>
-        `;
+          <div class="card__total" id="tot-${p.id}"><b>${tot}</b><span>сумма</span></div>
+        </div>
+        <div class="scores" id="sc-${p.id}">
+          ${Array.from({length:10},(_,i)=>`<button class="sbtn${i+1===mine?' on':''}" data-s="${i+1}">${i+1}</button>`).join('')}
+        </div>
+        <div class="saved" id="saved-${p.id}"></div>
+      `;
+      card.querySelectorAll('.sbtn').forEach(btn =>
+        btn.addEventListener('click', () => setScore(p.id, Number(btn.dataset.s)))
+      );
+      grid.appendChild(card);
+    });
+  }
 
-        grid.appendChild(card);
-      });
+  // ── boot ──
+  window.addEventListener('DOMContentLoaded', () => {
+    initGsi();
+    if (token) {
+      show('mainScreen');
+      loadAll().catch(logout);
+    } else {
+      show('loginScreen');
     }
-
-    // ── Выбор балла ──
-    window.selectScore = (idx, name, score) => {
-      const card = document.getElementById(`card-${idx}`);
-      if (card.classList.contains('voted')) return;
-      selectedScores[name] = score;
-      card.querySelectorAll('.score-btn').forEach((btn, i) => {
-        btn.classList.toggle('selected', i + 1 === score);
-      });
-      document.getElementById(`submit-${idx}`).disabled = false;
-    };
-
-    // ── Отправка балла ──
-    window.submitScore = async (name, idx) => {
-      const score = selectedScores[name];
-      if (!score) return;
-      const submitBtn = document.getElementById(`submit-${idx}`);
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Жөнөтүлүүдө...';
-      try {
-        const juryId = currentUser.uid;
-        submittedScores[name] = score;
-        await setDoc(doc(db, 'jury_votes', juryId), {
-          email: currentUser.email,
-          scores: submittedScores,
-          lastVoted: name,
-          updatedAt: new Date().toISOString()
-        });
-        const card = document.getElementById(`card-${idx}`);
-        card.classList.add('voted');
-        card.querySelector('.jury-card__voted-badge strong').textContent = score;
-        card.querySelector('.jury-card__voted-badge').style.display = 'flex';
-        submitBtn.style.display = 'none';
-      } catch(e) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Баллды жөнөтүү';
-        alert('Ката чыкты. Кайра аракет кылыңыз.');
-        console.error(e);
-      }
-    };
+    setInterval(() => { if (token) refreshTotals(); }, 4000);
+    setInterval(() => { if (token) refreshState().then(renderTabs); }, 15000);
+  });
   </script>
 </body>
 </html>
