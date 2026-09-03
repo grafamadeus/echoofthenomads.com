@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
-  <title>Жюри — Echo of Nomads 2026</title>
+  <title>Jury — Echo of Nomads 2026</title>
   <link rel="icon" href="./assets/media/favicon.ico" type="image/x-icon">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
@@ -49,6 +49,9 @@
 
     .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
     .card__top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    .pnum{flex-shrink:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+      border-radius:50%;background:rgba(240,192,64,.15);border:1px solid rgba(240,192,64,.45);
+      color:var(--gold);font-weight:800;font-size:.82rem}
     .card__photo{width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(240,192,64,.4);flex-shrink:0;background:#1a2540}
     .card__id{flex:1;min-width:0}
     .card__name{font-size:.95rem;font-weight:700}
@@ -74,8 +77,8 @@
   <div id="loginScreen" class="screen">
     <div class="box">
       <div class="icon">🎵</div>
-      <h2>Панель жюри</h2>
-      <p>Войдите Google-аккаунтом жюри</p>
+      <h2>Jury Panel</h2>
+      <p>Sign in with the jury Google account</p>
       <div id="gsiButton" class="gsi-wrap"></div>
       <div class="err" id="loginError"></div>
     </div>
@@ -85,22 +88,22 @@
   <div id="deniedScreen" class="screen" style="display:none">
     <div class="box">
       <div class="icon">🚫</div>
-      <h2 style="color:#ff6b6b">Доступа нет</h2>
-      <p>Эта страница только для членов жюри. Этот аккаунт не в списке.</p>
-      <button class="linkbtn" onclick="location.reload()">Войти другим аккаунтом</button>
+      <h2 style="color:#ff6b6b">Access denied</h2>
+      <p>This page is for jury members only. This account is not on the list.</p>
+      <button class="linkbtn" onclick="location.reload()">Sign in with another account</button>
     </div>
   </div>
 
   <!-- MAIN -->
   <div id="mainScreen">
     <div class="topbar">
-      <div class="who">Жюри: <b id="jurorName">—</b></div>
+      <div class="who">Jury: <b id="jurorName">—</b></div>
       <div class="tabs" id="catTabs"></div>
-      <button class="out" onclick="signOut()">Выйти</button>
+      <button class="out" onclick="signOut()">Sign out</button>
     </div>
     <div class="wrap">
-      <div class="hint">Нажмите оценку 1–10 — сохраняется сразу. Можно менять до закрытия.</div>
-      <div class="closed" id="closedBanner" style="display:none">Оценивание закрыто администратором</div>
+      <div class="hint">Tap a score 1–10 — it saves instantly. You can change it until scoring closes.</div>
+      <div class="closed" id="closedBanner" style="display:none">Scoring closed by the administrator</div>
       <div class="catnote" id="catNote" style="display:none"></div>
       <div id="grid"></div>
     </div>
@@ -109,7 +112,7 @@
   <script>
   const API = "https://api.echoofthenomads.com";
   const GOOGLE_CLIENT_ID = "946233553017-h64ou08icrjua955hl8esmgpe49959ll.apps.googleusercontent.com";
-  const CAT_LABEL = { ethno: "Этно-хит", world: "Мировой хит" };
+  const CAT_LABEL = { ethno: "Ethno-Hit", world: "World-Hit" };
   const PHOTO = {
     "elif":"./assets/media/members/elif.webp","batista":"./assets/media/members/batista.webp",
     "villegas":"./assets/media/members/villegas.webp","roger-ricco":"./assets/media/members/Roger Ricco.webp",
@@ -180,9 +183,9 @@
       } else if (r.status === 403) {
         show('deniedScreen');
       } else {
-        errEl.textContent = 'Ошибка входа. Попробуйте снова.';
+        errEl.textContent = 'Sign-in failed. Please try again.';
       }
-    } catch { errEl.textContent = 'Нет связи с сервером.'; }
+    } catch { errEl.textContent = 'No connection to the server.'; }
   }
 
   // ── data ──
@@ -190,7 +193,10 @@
     try {
       const pr = await fetch(API + '/api/results', { cache:'no-store' });
       const pd = await pr.json();
-      participants = (pd.participants || []).slice().sort((a,b) => a.id - b.id);
+      // ordered by stage running order (draw number); no-number falls to the end
+      participants = (pd.participants || []).slice().sort((a,b) =>
+        (a.number ?? 999) - (b.number ?? 999) || a.id - b.id
+      );
     } catch {}
     await refreshState();
     await refreshTotals();
@@ -230,8 +236,8 @@
     });
   }
   async function setScore(pid, score) {
-    if (!panel.open) { alert('Оценивание закрыто администратором.'); return; }
-    if (viewCat !== panel.category) { alert('Сейчас оценивается другая категория: ' + CAT_LABEL[panel.category] + '.'); return; }
+    if (!panel.open) { alert('Scoring is closed by the administrator.'); return; }
+    if (viewCat !== panel.category) { alert('A different category is being scored now: ' + CAT_LABEL[panel.category] + '.'); return; }
     myScores[viewCat][pid] = score;
     paintCard(pid);
     const saved = document.querySelector(`#saved-${pid}`);
@@ -244,14 +250,14 @@
       if (r.status === 403) {
         // admin changed state mid-tap — resync and stop
         await refreshState(); syncActiveCat(); renderGrid();
-        if (saved) { saved.textContent = 'категория закрыта'; saved.style.color = '#ffb84d'; }
+        if (saved) { saved.textContent = 'category locked'; saved.style.color = '#ffb84d'; }
         return;
       }
-      if (!r.ok) { if (saved){saved.textContent='не сохранилось'; saved.style.color='#ff6b6b';} return; }
-      if (saved) { saved.textContent = 'сохранено ✓'; saved.style.color = '#51cf66'; }
+      if (!r.ok) { if (saved){saved.textContent='not saved'; saved.style.color='#ff6b6b';} return; }
+      if (saved) { saved.textContent = 'saved ✓'; saved.style.color = '#51cf66'; }
       refreshTotals();
     } catch {
-      if (saved) { saved.textContent = 'нет связи'; saved.style.color = '#ff6b6b'; }
+      if (saved) { saved.textContent = 'no connection'; saved.style.color = '#ff6b6b'; }
     }
   }
 
@@ -260,7 +266,7 @@
     const el = document.getElementById('catTabs');
     el.innerHTML = ['ethno','world'].map(c => {
       const isActive = c === panel.category;
-      const mark = isActive ? '<span class="now" title="сейчас оценивается"></span>' : '<span class="lk">🔒</span>';
+      const mark = isActive ? '<span class="now" title="currently scored"></span>' : '<span class="lk">🔒</span>';
       return `<button class="tab${c===viewCat?' active':''}${isActive?'':' locked'}" data-cat="${c}">${CAT_LABEL[c]}${mark}</button>`;
     }).join('');
     el.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
@@ -277,7 +283,7 @@
     const locked = viewCat !== panel.category;
     const note = document.getElementById('catNote');
     if (locked) {
-      note.textContent = `Сейчас оценивается «${CAT_LABEL[panel.category]}». Категория «${CAT_LABEL[viewCat]}» закрыта — только просмотр.`;
+      note.textContent = `Now scoring "${CAT_LABEL[panel.category]}". The "${CAT_LABEL[viewCat]}" category is locked — view only.`;
       note.style.display = 'block';
     } else {
       note.style.display = 'none';
@@ -292,12 +298,13 @@
       card.className = 'card';
       card.innerHTML = `
         <div class="card__top">
+          <div class="pnum" title="running order">${p.number ?? '—'}</div>
           <img class="card__photo" src="${PHOTO[p.slug]||NO_PHOTO}" alt="" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
           <div class="card__id">
             <div class="card__name">${p.name}</div>
             <div class="card__country"><img src="./assets/media/flags/${p.code}.svg" alt="">${p.country||''}</div>
           </div>
-          <div class="card__total" id="tot-${p.id}"><b>${tot}</b><span>сумма</span></div>
+          <div class="card__total" id="tot-${p.id}"><b>${tot}</b><span>total</span></div>
         </div>
         <div class="scores${locked ? ' locked' : ''}" id="sc-${p.id}">
           ${Array.from({length:10},(_,i)=>`<button class="sbtn${i+1===mine?' on':''}" data-s="${i+1}">${i+1}</button>`).join('')}
