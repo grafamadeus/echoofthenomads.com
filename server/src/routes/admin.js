@@ -124,12 +124,13 @@ export default async function adminRoutes(fastify) {
         properties: {
           open: { type: 'boolean' },
           category: { type: 'string', enum: ['ethno', 'world'] },
+          reveal: { type: 'boolean' },
         },
       },
     },
   }, async (req) => {
     const cur = (await q(`SELECT value FROM app_setting WHERE key='jury'`)).rows[0]?.value || {};
-    const next = { open: true, category: 'ethno', ...cur, ...req.body };
+    const next = { open: true, category: 'ethno', reveal: true, ...cur, ...req.body };
     await q(
       `INSERT INTO app_setting (key, value, updated_at) VALUES ('jury', $1, now())
        ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,

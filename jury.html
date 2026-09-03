@@ -221,10 +221,12 @@
     panel.open = d.open; panel.category = d.category;
     myScores = { ethno: d.scores.ethno || {}, world: d.scores.world || {} };
   }
+  let juryHidden = false;
   async function refreshTotals() {
     try {
       const r = await fetch(API + '/api/jury/results', { cache:'no-store' });
       const d = await r.json();
+      juryHidden = d.hidden === true;
       totals = { ethno: d.totals.ethno || {}, world: d.totals.world || {} };
       panel.open = d.open; panel.category = d.category;
     } catch { return; }
@@ -232,7 +234,7 @@
     syncActiveCat();
     participants.forEach(p => {
       const b = document.querySelector(`#tot-${p.id} b`);
-      if (b) b.textContent = totals[viewCat][p.id]?.total ?? 0;
+      if (b) b.textContent = juryHidden ? '—' : (totals[viewCat][p.id]?.total ?? 0);
     });
   }
   async function setScore(pid, score) {
@@ -293,7 +295,7 @@
     grid.innerHTML = '';
     participants.forEach(p => {
       const mine = myScores[viewCat][p.id];
-      const tot = totals[viewCat][p.id]?.total ?? 0;
+      const tot = juryHidden ? '—' : (totals[viewCat][p.id]?.total ?? 0);
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `

@@ -111,6 +111,8 @@
       ]);
       (pr.participants || []).forEach(p => meta[p.id] = p);
 
+      if (jr.hidden) { renderHidden(); return; }
+
       // current audience-vote leader — always barred from also being the jury leader
       let audId = null, maxV = 0;
       (pr.participants || []).forEach(p => { if ((p.votes||0) > maxV) { maxV = p.votes; audId = p.id; } });
@@ -128,6 +130,14 @@
       const leader = rows.find(r => r.score > 0 && r.id !== audId) || null;
       render(rows, leader, audId);
     }catch(e){}
+  }
+
+  function renderHidden(){
+    document.getElementById('featured').innerHTML =
+      '<span class="pill">Жыйынтык</span>' +
+      '<div class="nm" style="font-size:clamp(18px,2.4vw,34px)">Калыстар тобунун баллдары<br>жабык</div>' +
+      '<div class="scl">жыйынтык жарыяланганга чейин</div>';
+    document.getElementById('list').innerHTML = '';
   }
 
   function render(rows, leader, audId){

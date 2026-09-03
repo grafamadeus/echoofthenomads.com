@@ -384,6 +384,7 @@ function renderMembers() {
 
 // ── Баллы жюри: сумма обеих категорий (этно-хит + мировой хит) ──
 let juryTotals = {}; // slug -> { ethno, world, sum }
+let juryHidden = false;
 
 async function fetchJuryResults() {
   if (document.hidden) return;
@@ -391,6 +392,7 @@ async function fetchJuryResults() {
     const res = await fetch(`${API_BASE}/api/jury/results`, { cache: 'no-store' });
     if (!res.ok) return;
     const d = await res.json();
+    juryHidden = d.hidden === true;
     const e = (d.totals && d.totals.ethno) || {};
     const w = (d.totals && d.totals.world) || {};
     const next = {};
@@ -410,20 +412,22 @@ function renderJuryScores() {
   if (!list) return;
 
   const rows = PARTICIPANTS.map(p => ({ p, s: juryTotals[p.slug] || { ethno: 0, world: 0, sum: 0 } }));
-  const anyScores = rows.some(r => r.s.sum > 0);
+  const anyScores = !juryHidden && rows.some(r => r.s.sum > 0);
   if (anyScores) rows.sort((a, b) => b.s.sum - a.s.sum);
 
   list.innerHTML = '';
   rows.forEach(({ p, s }) => {
     const row = document.createElement('div');
     row.className = 'jury-score-row';
+    const val = juryHidden ? '<span style="opacity:.5">—</span>' : s.sum;
+    const breakdown = juryHidden ? 'итоги скоро' : `этно ${s.ethno} · мир ${s.world}`;
     row.innerHTML = `
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-info">
         <div class="member-name"><img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
-        <div class="jury-breakdown">этно ${s.ethno} · мир ${s.world}</div>
+        <div class="jury-breakdown">${breakdown}</div>
       </div>
-      <div class="jury-score-val">${s.sum}</div>
+      <div class="jury-score-val">${val}</div>
     `;
     list.appendChild(row);
   });

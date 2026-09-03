@@ -6,7 +6,7 @@ const CATEGORIES = ['ethno', 'world'];
 
 async function getJurySetting() {
   const row = (await q(`SELECT value FROM app_setting WHERE key = 'jury'`)).rows[0];
-  return { open: true, category: 'ethno', ...(row?.value || {}) };
+  return { open: true, category: 'ethno', reveal: true, ...(row?.value || {}) };
 }
 
 // onRequest guard for juror-only routes
@@ -97,14 +97,21 @@ export default async function juryRoutes(fastify) {
     reply.header('Cache-Control', 'public, max-age=2');
     reply.header('Vary', 'Origin');
     const s = await getJurySetting();
+    const jurorCount = (await q(`SELECT count(*)::int AS n FROM juror WHERE active`)).rows[0].n;
+    const base = { open: s.open !== false, category: s.category, jurorCount };
+
+    // Results temporarily hidden by the admin (HQ is reconciling scores).
+    if (s.reveal === false) {
+      return { ...base, hidden: true, totals: { ethno: {}, world: {} } };
+    }
+
     const rows = (await q(
       `SELECT participant_id, category, sum(score)::int AS total, count(*)::int AS jurors
          FROM jury_score GROUP BY participant_id, category`
     )).rows;
-    const jurorCount = (await q(`SELECT count(*)::int AS n FROM juror WHERE active`)).rows[0].n;
     // shape: { ethno: { [pid]: {total, jurors} }, world: {...} }
     const totals = { ethno: {}, world: {} };
     for (const r of rows) totals[r.category][r.participant_id] = { total: r.total, jurors: r.jurors };
-    return { open: s.open !== false, category: s.category, jurorCount, totals };
+    return { ...base, hidden: false, totals };
   });
 }
