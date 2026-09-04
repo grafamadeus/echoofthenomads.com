@@ -18,6 +18,18 @@
       background:url('./assets/media/background-01-01 (1).webp') no-repeat center/cover}
     .bg::before{content:'';position:absolute;inset:0;background:rgba(10,15,44,.82)}
 
+    /* ── background particles ── */
+    .bgfx{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    .bgfx i{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;
+      background:rgba(240,192,64,.55);filter:drop-shadow(0 0 4px rgba(240,192,64,.6));
+      animation:floatUp linear infinite}
+    @keyframes floatUp{
+      0%{transform:translateY(0) scale(.6);opacity:0}
+      12%{opacity:.85}
+      88%{opacity:.85}
+      100%{transform:translateY(-108vh) scale(1);opacity:0}
+    }
+
     .podium{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:center;
       gap:clamp(20px,6vw,96px);padding:clamp(20px,4vw,64px)}
 
@@ -32,12 +44,25 @@
     .halo{position:absolute;inset:-16px;border-radius:50%;
       background:conic-gradient(from 0deg,transparent 0 55%,var(--c) 82%,transparent 100%);
       filter:blur(10px);opacity:.6;animation:spin 6s linear infinite}
+
+    /* orbiting dots */
     .particles{position:absolute;top:50%;left:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;
       border-radius:50%;background:var(--c);animation:spin 17s linear infinite}
     .w--1 .particles{box-shadow:0 -120px 0 0 var(--c),104px -62px 0 -1px var(--c),118px 24px 0 -1px var(--c),
       58px 106px 0 0 var(--c),-50px 112px 0 -2px var(--c),-116px 32px 0 -1px var(--c),-94px -80px 0 -1px var(--c),20px -104px 0 -2px var(--c)}
     .w--2 .particles,.w--3 .particles{box-shadow:0 -78px 0 0 var(--c),68px -40px 0 -1px var(--c),76px 16px 0 -1px var(--c),
       38px 69px 0 0 var(--c),-32px 72px 0 -2px var(--c),-75px 22px 0 -1px var(--c),-61px -52px 0 -1px var(--c),13px -67px 0 -2px var(--c)}
+
+    /* sparks emitted outward from the photo */
+    .sparks{position:absolute;inset:0;pointer-events:none}
+    .sparks span{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;
+      background:var(--c);filter:drop-shadow(0 0 6px var(--c));
+      animation:emit ease-out infinite}
+    @keyframes emit{
+      0%{transform:translate(-50%,-50%) rotate(var(--a)) translateY(-42%) scale(.3);opacity:0}
+      18%{opacity:1}
+      100%{transform:translate(-50%,-50%) rotate(var(--a)) translateY(calc(-42% - var(--d))) scale(0);opacity:0}
+    }
 
     .ph{position:relative;z-index:1;display:block;width:86%;aspect-ratio:1;height:auto;
       border-radius:50%;object-fit:cover;object-position:center;background:#1a2540;
@@ -53,11 +78,13 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     @keyframes pulse{0%,100%{box-shadow:0 0 0 6px rgba(255,255,255,.04),0 0 22px 2px var(--glow)}
       50%{box-shadow:0 0 0 6px rgba(255,255,255,.04),0 0 48px 13px var(--glow)}}
-    @media(prefers-reduced-motion:reduce){.halo,.particles,.ph{animation:none}}
+    @media(prefers-reduced-motion:reduce){.halo,.particles,.sparks span,.ph,.bgfx i{animation:none}.bgfx{display:none}}
   </style>
 </head>
 <body>
   <div class="bg"></div>
+  <div class="bgfx" id="bgfx"></div>
+
   <div class="podium" id="podium">
     <div class="w w--2" data-rank="2"></div>
     <div class="w w--1" data-rank="1"></div>
@@ -80,25 +107,70 @@
   };
   const NO_PHOTO = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E";
   const img = s => PHOTO[s] || NO_PHOTO;
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const rnd = (a,b) => a + Math.random()*(b-a);
+
+  // background particle field (built once)
+  (function buildBg(){
+    const box = document.getElementById('bgfx');
+    let h = '';
+    for (let i=0;i<46;i++){
+      const blue = Math.random() < 0.35;
+      const size = rnd(2,4.5).toFixed(1);
+      h += '<i style="left:'+rnd(0,100).toFixed(2)+'%;width:'+size+'px;height:'+size+'px;'+
+           'animation-duration:'+rnd(13,30).toFixed(1)+'s;animation-delay:-'+rnd(0,30).toFixed(1)+'s;'+
+           (blue ? 'background:rgba(77,184,255,.55);filter:drop-shadow(0 0 4px rgba(77,184,255,.6));' : '') +
+           '"></i>';
+    }
+    box.innerHTML = h;
+  })();
+
+  function sparksHtml(){
+    let h = '';
+    for (let i=0;i<12;i++){
+      const a = Math.round(i*30 + rnd(-12,12));
+      const d = Math.round(rnd(70,150));
+      h += '<span style="--a:'+a+'deg;--d:'+d+'px;'+
+           'animation-duration:'+rnd(1.7,3.4).toFixed(2)+'s;animation-delay:-'+rnd(0,3).toFixed(2)+'s"></span>';
+    }
+    return h;
+  }
+
+  function build(){
+    [1,2,3].forEach(rank => {
+      const el = document.querySelector('.w[data-rank="'+rank+'"]');
+      if (el.dataset.built) return;
+      el.innerHTML =
+        '<div class="pw">' +
+          '<span class="halo"></span>' +
+          '<span class="particles"></span>' +
+          '<span class="sparks">' + sparksHtml() + '</span>' +
+          '<img class="ph" alt="">' +
+        '</div>' +
+        '<div class="nm"></div>' +
+        '<div class="place">' + rank + '</div>';
+      el.dataset.built = '1';
+    });
+  }
 
   async function tick(){
+    build();
     try{
       const d = await fetch(API + '/api/results', { cache:'no-store' }).then(r => r.json());
       const top = (d.participants || []).slice()
         .sort((a,b) => (b.votes - a.votes) || (a.id - b.id))
         .slice(0, 3);
       [1,2,3].forEach(rank => {
-        const el = document.querySelector('.w[data-rank="' + rank + '"]');
+        const el = document.querySelector('.w[data-rank="'+rank+'"]');
         const p = top[rank - 1];
-        el.innerHTML = p ? (
-          '<div class="pw">' +
-            '<span class="halo"></span><span class="particles"></span>' +
-            '<img class="ph" src="' + img(p.slug) + '" onerror="this.onerror=null;this.src=\'' + NO_PHOTO + '\'" alt="">' +
-          '</div>' +
-          '<div class="nm">' + esc(p.name) + '</div>' +
-          '<div class="place">' + rank + '</div>'
-        ) : '';
+        if (!p){ el.style.visibility = 'hidden'; return; }
+        el.style.visibility = '';
+        const im = el.querySelector('.ph');
+        const src = img(p.slug);
+        if (im.getAttribute('src') !== src){
+          im.onerror = () => { im.onerror = null; im.src = NO_PHOTO; };
+          im.src = src;
+        }
+        el.querySelector('.nm').textContent = p.name;
       });
     }catch(e){}
   }
