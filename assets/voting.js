@@ -384,7 +384,7 @@ function renderMembers() {
 
 // ── Баллы жюри ──
 let juryTotals = {}; // slug -> { ethno, world, sum }
-let juryHidden = false;
+let juryMode = true; // true = все баллы видны | false = всё скрыто | 'protocol' = только награды из протокола
 
 // Итоговый протокол жюри — ручной порядок призёров. Идут первыми в списке,
 // вместо суммы баллов — звание. Остальные — ниже, по своим баллам.
@@ -403,7 +403,7 @@ async function fetchJuryResults() {
     const res = await fetch(`${API_BASE}/api/jury/results`, { cache: 'no-store' });
     if (!res.ok) return;
     const d = await res.json();
-    juryHidden = d.hidden === true;
+    juryMode = d.reveal === undefined ? (d.hidden ? false : true) : d.reveal;
     const e = (d.totals && d.totals.ethno) || {};
     const w = (d.totals && d.totals.world) || {};
     const next = {};
@@ -423,16 +423,26 @@ function renderJuryScores() {
   if (!list) return;
 
   let ordered;
-  if (juryHidden) {
-    ordered = PARTICIPANTS.map(p => ({ p, label: null }));
+  if (juryMode === false) {
+    // fully hidden: everyone shows a dash, order doesn't matter
+    ordered = PARTICIPANTS.map(p => ({ p, label: null, sum: null }));
   } else {
     const proto = JURY_PROTOCOL
       .map(a => ({ p: bySlug(a.slug), label: a.label }))
       .filter(r => r.p);
-    const rest = PARTICIPANTS
-      .filter(p => !PROTOCOL_SLUGS.has(p.slug))
-      .map(p => ({ p, label: null, sum: (juryTotals[p.slug] || {}).sum || 0 }))
-      .sort((a, b) => b.sum - a.sum);
+    let rest;
+    if (juryMode === 'protocol') {
+      // only the fixed award list is revealed — everyone else stays a dash,
+      // in roster order (no sorting, since their scores aren't shown)
+      rest = PARTICIPANTS
+        .filter(p => !PROTOCOL_SLUGS.has(p.slug))
+        .map(p => ({ p, label: null, sum: null }));
+    } else {
+      rest = PARTICIPANTS
+        .filter(p => !PROTOCOL_SLUGS.has(p.slug))
+        .map(p => ({ p, label: null, sum: (juryTotals[p.slug] || {}).sum || 0 }))
+        .sort((a, b) => b.sum - a.sum);
+    }
     ordered = [...proto, ...rest];
   }
 
@@ -440,8 +450,8 @@ function renderJuryScores() {
   ordered.forEach(({ p, label, sum }) => {
     const row = document.createElement('div');
     row.className = 'jury-score-row';
-    const isAward = !juryHidden && label != null;
-    const val = juryHidden ? '<span style="opacity:.5">—</span>' : (label != null ? label : (sum ?? 0));
+    const isAward = label != null;
+    const val = label != null ? label : (sum == null ? '<span style="opacity:.5">—</span>' : sum);
     row.innerHTML = `
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-info">

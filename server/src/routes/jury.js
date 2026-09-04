@@ -98,7 +98,9 @@ export default async function juryRoutes(fastify) {
     reply.header('Vary', 'Origin');
     const s = await getJurySetting();
     const jurorCount = (await q(`SELECT count(*)::int AS n FROM juror WHERE active`)).rows[0].n;
-    const base = { open: s.open !== false, category: s.category, jurorCount };
+    // reveal: true (fully shown) | false (hidden) | "protocol" (only the fixed
+    // award list on the landing page; every other display treats it as hidden)
+    const base = { open: s.open !== false, category: s.category, jurorCount, reveal: s.reveal };
 
     // Results temporarily hidden by the admin (HQ is reconciling scores).
     if (s.reveal === false) {

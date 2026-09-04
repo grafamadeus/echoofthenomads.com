@@ -124,7 +124,8 @@ export default async function adminRoutes(fastify) {
         properties: {
           open: { type: 'boolean' },
           category: { type: 'string', enum: ['ethno', 'world'] },
-          reveal: { type: 'boolean' },
+          // true = fully shown, false = hidden, "protocol" = only the fixed award list
+          reveal: { anyOf: [{ type: 'boolean' }, { type: 'string', enum: ['protocol'] }] },
         },
       },
     },

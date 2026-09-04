@@ -111,7 +111,9 @@
       ]);
       (pr.participants || []).forEach(p => meta[p.id] = p);
 
-      if (jr.hidden) { renderHidden(); return; }
+      // board only shows the real ranking on a full reveal — "protocol" mode
+      // (landing-only award list) and "hidden" both stay blank here
+      if (jr.reveal !== true) { renderHidden(); return; }
 
       // current audience-vote leader — always barred from also being the jury leader
       let audId = null, maxV = 0;

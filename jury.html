@@ -226,7 +226,9 @@
     try {
       const r = await fetch(API + '/api/jury/results', { cache:'no-store' });
       const d = await r.json();
-      juryHidden = d.hidden === true;
+      // "protocol" mode (landing-only award list) reads as hidden here too —
+      // jurors keep seeing their own picks, just not the running totals.
+      juryHidden = d.reveal !== true;
       totals = { ethno: d.totals.ethno || {}, world: d.totals.world || {} };
       panel.open = d.open; panel.category = d.category;
     } catch { return; }
