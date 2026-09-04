@@ -382,9 +382,20 @@ function renderMembers() {
   if (window.observeReveals) window.observeReveals();
 }
 
-// ── Баллы жюри: сумма обеих категорий (этно-хит + мировой хит) ──
+// ── Баллы жюри ──
 let juryTotals = {}; // slug -> { ethno, world, sum }
 let juryHidden = false;
+
+// Итоговый протокол жюри — ручной порядок призёров. Идут первыми в списке,
+// вместо суммы баллов — звание. Остальные — ниже, по своим баллам.
+const JURY_PROTOCOL = [
+  { slug: 'derkembaev',    label: 'Гран-при' },
+  { slug: 'angelov-vasil', label: 'I-место' },
+  { slug: 'zhasmin',       label: 'II-место' },
+  { slug: 'thami',         label: 'III-место' },
+  { slug: 'ngo-chau',      label: 'III-место' },
+];
+const PROTOCOL_SLUGS = new Set(JURY_PROTOCOL.map(x => x.slug));
 
 async function fetchJuryResults() {
   if (document.hidden) return;
@@ -411,23 +422,32 @@ function renderJuryScores() {
   const list = document.getElementById('juryScoresList');
   if (!list) return;
 
-  const rows = PARTICIPANTS.map(p => ({ p, s: juryTotals[p.slug] || { ethno: 0, world: 0, sum: 0 } }));
-  const anyScores = !juryHidden && rows.some(r => r.s.sum > 0);
-  if (anyScores) rows.sort((a, b) => b.s.sum - a.s.sum);
+  let ordered;
+  if (juryHidden) {
+    ordered = PARTICIPANTS.map(p => ({ p, label: null }));
+  } else {
+    const proto = JURY_PROTOCOL
+      .map(a => ({ p: bySlug(a.slug), label: a.label }))
+      .filter(r => r.p);
+    const rest = PARTICIPANTS
+      .filter(p => !PROTOCOL_SLUGS.has(p.slug))
+      .map(p => ({ p, label: null, sum: (juryTotals[p.slug] || {}).sum || 0 }))
+      .sort((a, b) => b.sum - a.sum);
+    ordered = [...proto, ...rest];
+  }
 
   list.innerHTML = '';
-  rows.forEach(({ p, s }) => {
+  ordered.forEach(({ p, label, sum }) => {
     const row = document.createElement('div');
     row.className = 'jury-score-row';
-    const val = juryHidden ? '<span style="opacity:.5">—</span>' : s.sum;
-    const breakdown = juryHidden ? 'итоги скоро' : `этно ${s.ethno} · мир ${s.world}`;
+    const isAward = !juryHidden && label != null;
+    const val = juryHidden ? '<span style="opacity:.5">—</span>' : (label != null ? label : (sum ?? 0));
     row.innerHTML = `
       <img class="member-photo" src="${p.photo}" alt="${p.name}" onerror="this.onerror=null;this.src='${NO_PHOTO}'">
       <div class="member-info">
         <div class="member-name"><img class="member-flag" src="./assets/media/flags/${p.code}.svg" alt="${p.country || ''}" width="26" height="18">${p.name}</div>
-        <div class="jury-breakdown">${breakdown}</div>
       </div>
-      <div class="jury-score-val">${val}</div>
+      <div class="jury-score-val${isAward ? ' jury-score-val--award' : ''}">${val}</div>
     `;
     list.appendChild(row);
   });

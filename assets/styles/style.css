@@ -897,6 +897,12 @@ html.js .reveal.is-visible {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--gold);
+  text-align: right;
+}
+.jury-score-val--award {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 .jury-breakdown {
   font-size: 0.72rem;
