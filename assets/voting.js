@@ -111,6 +111,13 @@ const i18n = {
     winners_title:   "Победители национального отбора",
     winner_audience: "Победитель приза зрительских симпатий",
     winner_jury:     "Победитель по голосованию жюри",
+    echo_winners_kicker: "Echo of Nomads",
+    echo_winners_title:  "Победители международного конкурса",
+    award_grandprix: "Гран-при",
+    award_place1:    "1 место",
+    award_place2:    "2 место",
+    award_place3:    "3 место",
+    award_audience:  "Приз зрительских симпатий",
 
   },
   ky: {
@@ -178,6 +185,13 @@ const i18n = {
     winners_title:   "Улуттук тандоонун жеңүүчүлөрү",
     winner_audience: "Көрүүчүлөрдүн симпатия сыйлыгынын ээси",
     winner_jury:     "Калыстар тобунун добушу боюнча жеңүүчү",
+    echo_winners_kicker: "Echo of Nomads",
+    echo_winners_title:  "Эл аралык сынактын жеңүүчүлөрү",
+    award_grandprix: "Гран-при",
+    award_place1:    "1-орун",
+    award_place2:    "2-орун",
+    award_place3:    "3-орун",
+    award_audience:  "Көрүүчүлөрдүн симпатия сыйлыгы",
   },
   en: {
     logo:            "./assets/media/echo-nomad-en.webp",
@@ -244,6 +258,13 @@ const i18n = {
     winners_title:   "National Selection Winners",
     winner_audience: "Audience Choice Award Winner",
     winner_jury:     "Jury Vote Winner",
+    echo_winners_kicker: "Echo of Nomads",
+    echo_winners_title:  "International Competition Winners",
+    award_grandprix: "Grand Prix",
+    award_place1:    "1st place",
+    award_place2:    "2nd place",
+    award_place3:    "3rd place",
+    award_audience:  "Audience Choice Award",
 
   }
 };
@@ -315,7 +336,31 @@ async function fetchResults() {
     }
 
     renderMembers();
+    updateEchoWinnerAudience();
   } catch { /* keep last-known snapshot; UI stays up */ }
+}
+
+// Приз зрительских симпатий в секции «Победители международного конкурса» —
+// живой лидер по голосам (не путать с data-i18n award_audience — сам текст награды статичен).
+function updateEchoWinnerAudience() {
+  const nameEl = document.getElementById('echoWinnerVoteName');
+  const photoEl = document.getElementById('echoWinnerVotePhoto');
+  if (!nameEl || !photoEl) return;
+
+  let top = null, topVotes = 0;
+  PARTICIPANTS.forEach(p => {
+    const v = live.counts[p.slug] || 0;
+    if (v > topVotes) { topVotes = v; top = p; }
+  });
+  if (!top) return; // ещё нет голосов — оставляем placeholder
+
+  nameEl.textContent = top.name;
+  if (photoEl.dataset.slug !== top.slug) {
+    photoEl.dataset.slug = top.slug;
+    photoEl.alt = top.name;
+    photoEl.onerror = () => { photoEl.onerror = null; photoEl.src = NO_PHOTO; };
+    photoEl.src = top.photo;
+  }
 }
 
 function votingOpen() {

@@ -644,6 +644,14 @@ html.js .reveal.is-visible {
 .winner--audience { --w-color: #f0c040; --w-glow: rgba(240,192,64,0.55); }
 .winner--jury     { --w-color: #4db8ff; --w-glow: rgba(77,184,255,0.50); }
 
+/* Echo of Nomads international winners — six distinct colours */
+.winner--grandprix { --w-color: #f0c040; --w-glow: rgba(240,192,64,0.55); }
+.winner--place1    { --w-color: #c8d0e0; --w-glow: rgba(200,208,224,0.55); }
+.winner--place2    { --w-color: #cd7f32; --w-glow: rgba(205,127,50,0.55); }
+.winner--place3a   { --w-color: #4db8ff; --w-glow: rgba(77,184,255,0.50); }
+.winner--place3b   { --w-color: #3ddc97; --w-glow: rgba(61,220,151,0.50); }
+.winner--vote      { --w-color: #b28dff; --w-glow: rgba(178,141,255,0.50); }
+
 .winner__photo-wrap {
   position: relative;
   width: 176px;
