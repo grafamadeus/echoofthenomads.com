@@ -6,7 +6,6 @@
   <meta name="robots" content="noindex">
   <title>Jury — Echo of Nomads 2026</title>
   <link rel="icon" href="./assets/media/favicon.ico" type="image/x-icon">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root{
       --navy-dark:#0a0f2c; --panel:#141b3d; --gold:#f0c040; --gold-dark:#c9a227;
@@ -325,7 +324,18 @@
   }
 
   // ── boot ──
+  const IS_ARCHIVED = true; // конкурс завершён, сервер API отключён
+
   window.addEventListener('DOMContentLoaded', () => {
+    if (IS_ARCHIVED) {
+      try { sessionStorage.removeItem('jury_token'); } catch {}
+      const box = document.querySelector('#loginScreen .box');
+      if (box) box.innerHTML =
+        '<div class="icon">🏁</div><h2>Конкурс завершён</h2>' +
+        '<p>Оценивание жюри закрыто. Итоги — на главной странице.</p>';
+      show('loginScreen');
+      return;
+    }
     initGsi();
     if (token) {
       show('mainScreen');

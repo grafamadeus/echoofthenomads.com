@@ -152,30 +152,24 @@
     });
   }
 
-  async function tick(){
+  // Финальный топ-3 по зрительским голосам (сервер отключён, цифры зафиксированы).
+  const TOP3 = [
+    { slug:'odmandakh', name:'Odmandakh Bayaraa' },
+    { slug:'elif',      name:'Avcı Dişbudak Elif' },
+    { slug:'zhasmin',   name:'Tleumbetova Zhasmin' },
+  ];
+  function render(){
     build();
-    try{
-      const d = await fetch(API + '/api/results', { cache:'no-store' }).then(r => r.json());
-      const top = (d.participants || []).slice()
-        .sort((a,b) => (b.votes - a.votes) || (a.id - b.id))
-        .slice(0, 3);
-      [1,2,3].forEach(rank => {
-        const el = document.querySelector('.w[data-rank="'+rank+'"]');
-        const p = top[rank - 1];
-        if (!p){ el.style.visibility = 'hidden'; return; }
-        el.style.visibility = '';
-        const im = el.querySelector('.ph');
-        const src = img(p.slug);
-        if (im.getAttribute('src') !== src){
-          im.onerror = () => { im.onerror = null; im.src = NO_PHOTO; };
-          im.src = src;
-        }
-        el.querySelector('.nm').textContent = p.name;
-      });
-    }catch(e){}
+    [1,2,3].forEach(rank => {
+      const el = document.querySelector('.w[data-rank="'+rank+'"]');
+      const p = TOP3[rank - 1];
+      const im = el.querySelector('.ph');
+      im.onerror = () => { im.onerror = null; im.src = NO_PHOTO; };
+      im.src = img(p.slug);
+      el.querySelector('.nm').textContent = p.name;
+    });
   }
-  tick();
-  setInterval(tick, 5000);
+  render();
   </script>
 </body>
 </html>

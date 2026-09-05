@@ -38,6 +38,51 @@ const PARTICIPANTS = [
 const bySlug = (slug) => PARTICIPANTS.find(p => p.slug === slug) || null;
 const nameOf = (slug) => bySlug(slug)?.name || slug || "—";
 
+// ══════════════════════════════════════════════════════════════════════
+// ФИНАЛЬНЫЕ ИТОГИ. Голосование закрыто 4 сентября 2026, сервер API отключён.
+// Цифры зафиксированы из последнего снимка API (total 22 879 голосов).
+// ══════════════════════════════════════════════════════════════════════
+const IS_ARCHIVED = true;
+
+const FINAL_NUMBERS = {
+  elif:1, "ngo-chau":2, starbekov:3, batista:4, vika:5, hasanic:6, danial:7,
+  leal:8, zhasmin:9, "angelov-vasil":10, thami:11, hodaya:12, villegas:13,
+  lee:14, lva:15, odmandakh:16, "roger-ricco":17, naumenko:18, buga:19, derkembaev:20,
+};
+const FINAL_VOTES = {
+  elif:6516, batista:403, villegas:1053, "roger-ricco":98, "angelov-vasil":309,
+  lva:623, vika:721, hodaya:73, buga:186, naumenko:170, hasanic:538, leal:351,
+  thami:86, odmandakh:7460, "ngo-chau":591, zhasmin:2089, danial:62, lee:189,
+  derkembaev:385, starbekov:976,
+};
+const FINAL_VOTES_TOTAL = 22879;
+const FINAL_JURY = {
+  elif:{ethno:24,world:32}, batista:{ethno:36,world:40}, villegas:{ethno:39,world:33},
+  "roger-ricco":{ethno:36,world:38}, "angelov-vasil":{ethno:42,world:44}, lva:{ethno:33,world:38},
+  vika:{ethno:35,world:37}, hodaya:{ethno:24,world:36}, buga:{ethno:36,world:28},
+  naumenko:{ethno:37,world:38}, hasanic:{ethno:38,world:43}, leal:{ethno:30,world:32},
+  thami:{ethno:38,world:41}, odmandakh:{ethno:35,world:41}, "ngo-chau":{ethno:34,world:36},
+  zhasmin:{ethno:41,world:40}, danial:{ethno:23,world:33}, lee:{ethno:29,world:39},
+  derkembaev:{ethno:41,world:43}, starbekov:{ethno:31,world:34},
+};
+
+function loadFinal() {
+  PARTICIPANTS.forEach(p => { p.number = FINAL_NUMBERS[p.slug] ?? p.number; });
+  live.ready  = true;
+  live.open   = false;
+  live.total  = FINAL_VOTES_TOTAL;
+  live.counts = { ...FINAL_VOTES };
+  juryMode = true;
+  juryTotals = {};
+  Object.keys(FINAL_JURY).forEach(slug => {
+    const j = FINAL_JURY[slug];
+    juryTotals[slug] = { ethno: j.ethno, world: j.world, sum: j.ethno + j.world };
+  });
+  renderMembers();
+  renderJuryScores();
+  updateEchoWinnerAudience();
+}
+
 // Заглушка на случай отсутствующего фото участника (силуэт в цвете акцента).
 const NO_PHOTO = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 56 56%22%3E%3Crect width=%2256%22 height=%2256%22 fill=%22%231a2540%22/%3E%3Ccircle cx=%2228%22 cy=%2223%22 r=%2210%22 fill=%22%23f0c040%22/%3E%3Cpath d=%22M9 52c1-11 9-17 19-17s18 6 19 17z%22 fill=%22%23f0c040%22/%3E%3C/svg%3E";
 
@@ -634,6 +679,12 @@ window.signInWithGoogle = () => {};
 
 // ── Инициализация ──
 window.addEventListener('DOMContentLoaded', () => {
+  if (IS_ARCHIVED) {
+    // Сервер отключён — рисуем зафиксированные итоги, без сети и опроса.
+    loadFinal();
+    setLang('ky');
+    return;
+  }
   setLang('ky');
   renderJuryScores();
   fetchResults().then(fetchJuryResults);   // /api/results first — it fills participant ids

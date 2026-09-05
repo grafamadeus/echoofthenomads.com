@@ -101,37 +101,34 @@
   const img = s => PHOTO[s] || NO_PHOTO;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  let meta = {}; // id -> {name, slug, country, code, votes}
-
-  async function tick(){
-    try{
-      const [pr, jr] = await Promise.all([
-        fetch(API + '/api/results', { cache:'no-store' }).then(r => r.json()),
-        fetch(API + '/api/jury/results', { cache:'no-store' }).then(r => r.json()),
-      ]);
-      (pr.participants || []).forEach(p => meta[p.id] = p);
-
-      // board only shows the real ranking on a full reveal — "protocol" mode
-      // (landing-only award list) and "hidden" both stay blank here
-      if (jr.reveal !== true) { renderHidden(); return; }
-
-      // current audience-vote leader — always barred from also being the jury leader
-      let audId = null, maxV = 0;
-      (pr.participants || []).forEach(p => { if ((p.votes||0) > maxV) { maxV = p.votes; audId = p.id; } });
-      if (maxV === 0) audId = null;
-
-      const e = (jr.totals && jr.totals.ethno) || {};
-      const w = (jr.totals && jr.totals.world) || {};
-      const rows = Object.keys(meta).map(id => {
-        id = +id;
-        const s = ((e[id] && e[id].total) || 0) + ((w[id] && w[id].total) || 0);
-        return { id, name: meta[id].name, slug: meta[id].slug, country: meta[id].country, code: meta[id].code, score: s };
-      }).sort((a,b) => (b.score - a.score) || (a.id - b.id));
-
-      // featured jury winner = top score that is NOT the audience leader
-      const leader = rows.find(r => r.score > 0 && r.id !== audId) || null;
-      render(rows, leader, audId);
-    }catch(e){}
+  // Финальные баллы жюри (сумма этно-хит + мировой хит), сервер отключён.
+  // audId — победитель зрительского голосования (Odmandakh), исключён из лидера жюри.
+  const FINAL = [
+    {id:5, slug:'angelov-vasil',name:'Vasil Angelov',country:'Македония',code:'mk',score:86},
+    {id:19,slug:'derkembaev',   name:'Деркембаев Нурдөөлөт',country:'Кыргызстан',code:'kg',score:84},
+    {id:11,slug:'hasanic',      name:'Benjamin Hasanić',country:'Босния и Герцеговина',code:'ba',score:81},
+    {id:16,slug:'zhasmin',      name:'Tleumbetova Zhasmin',country:'Казахстан',code:'kz',score:81},
+    {id:13,slug:'thami',        name:'Thami Mbatha',country:'Южная Африка',code:'za',score:79},
+    {id:2, slug:'batista',      name:'Annys Batista',country:'Куба',code:'cu',score:76},
+    {id:14,slug:'odmandakh',    name:'Odmandakh Bayaraa',country:'Монголия',code:'mn',score:76},
+    {id:10,slug:'naumenko',     name:'Tina Notte',country:'Латвия',code:'lv',score:75},
+    {id:4, slug:'roger-ricco',  name:'Roger Ricco',country:'Бразилия',code:'br',score:74},
+    {id:3, slug:'villegas',     name:'Rodrigo Villegas',country:'Мексика',code:'mx',score:72},
+    {id:7, slug:'vika',         name:'Vika Adamyan',country:'Армения',code:'am',score:72},
+    {id:6, slug:'lva',          name:'LVA',country:'Болгария',code:'bg',score:71},
+    {id:15,slug:'ngo-chau',     name:'Ngo Chau Anh',country:'Вьетнам',code:'vn',score:70},
+    {id:18,slug:'lee',          name:'Listen',country:'Южная Корея',code:'kr',score:68},
+    {id:20,slug:'starbekov',    name:'Старбеков Рыскелди',country:'Кыргызстан',code:'kg',score:65},
+    {id:9, slug:'buga',         name:'Elena Buga',country:'Молдова',code:'md',score:64},
+    {id:12,slug:'leal',         name:'Dany Leal',country:'Испания',code:'es',score:62},
+    {id:8, slug:'hodaya',       name:'Hodaya',country:'США',code:'us',score:60},
+    {id:1, slug:'elif',         name:'Avcı Dişbudak Elif',country:'Турция',code:'tr',score:56},
+    {id:17,slug:'danial',       name:'Zhumakanov Danial',country:'Россия',code:'ru',score:56},
+  ];
+  function tick(){
+    const audId = 14; // Odmandakh — победитель зрителей
+    const leader = FINAL.find(r => r.id !== audId) || null;
+    render(FINAL.slice(), leader, audId);
   }
 
   function renderHidden(){
@@ -168,7 +165,6 @@
     }).join('');
   }
   tick();
-  setInterval(tick, 3000);
   </script>
 </body>
 </html>

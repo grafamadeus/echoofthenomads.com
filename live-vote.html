@@ -97,14 +97,30 @@
   const img = s => PHOTO[s] || NO_PHOTO;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  async function tick(){
-    try{
-      const r = await fetch(API + '/api/results', { cache:'no-store' });
-      const d = await r.json();
-      const rows = (d.participants || []).slice().sort((a,b)=>(b.votes-a.votes)||(a.id-b.id));
-      render(rows);
-    }catch(e){}
-  }
+  // Финальные зрительские голоса (сервер отключён, цифры зафиксированы).
+  const FINAL = [
+    {slug:'odmandakh',code:'mn',name:'Odmandakh Bayaraa',country:'Монголия',votes:7460},
+    {slug:'elif',code:'tr',name:'Avcı Dişbudak Elif',country:'Турция',votes:6516},
+    {slug:'zhasmin',code:'kz',name:'Tleumbetova Zhasmin',country:'Казахстан',votes:2089},
+    {slug:'villegas',code:'mx',name:'Rodrigo Villegas',country:'Мексика',votes:1053},
+    {slug:'starbekov',code:'kg',name:'Старбеков Рыскелди',country:'Кыргызстан',votes:976},
+    {slug:'vika',code:'am',name:'Vika Adamyan',country:'Армения',votes:721},
+    {slug:'lva',code:'bg',name:'LVA',country:'Болгария',votes:623},
+    {slug:'ngo-chau',code:'vn',name:'Ngo Chau Anh',country:'Вьетнам',votes:591},
+    {slug:'hasanic',code:'ba',name:'Benjamin Hasanić',country:'Босния и Герцеговина',votes:538},
+    {slug:'batista',code:'cu',name:'Annys Batista',country:'Куба',votes:403},
+    {slug:'derkembaev',code:'kg',name:'Деркембаев Нурдөөлөт',country:'Кыргызстан',votes:385},
+    {slug:'leal',code:'es',name:'Dany Leal',country:'Испания',votes:351},
+    {slug:'angelov-vasil',code:'mk',name:'Vasil Angelov',country:'Македония',votes:309},
+    {slug:'lee',code:'kr',name:'Listen',country:'Южная Корея',votes:189},
+    {slug:'buga',code:'md',name:'Elena Buga',country:'Молдова',votes:186},
+    {slug:'naumenko',code:'lv',name:'Tina Notte',country:'Латвия',votes:170},
+    {slug:'roger-ricco',code:'br',name:'Roger Ricco',country:'Бразилия',votes:98},
+    {slug:'thami',code:'za',name:'Thami Mbatha',country:'Южная Африка',votes:86},
+    {slug:'hodaya',code:'us',name:'Hodaya',country:'США',votes:73},
+    {slug:'danial',code:'ru',name:'Zhumakanov Danial',country:'Россия',votes:62},
+  ];
+  function tick(){ render(FINAL.slice()); }
   function render(rows){
     const any = rows.some(r => r.votes > 0);
     const top = rows[0];
@@ -130,7 +146,6 @@
     ).join('');
   }
   tick();
-  setInterval(tick, 3000);
   </script>
 </body>
 </html>
